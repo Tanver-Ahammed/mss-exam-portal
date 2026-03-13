@@ -2,6 +2,7 @@ package com.mss.exam.portal.entity.enrollment;
 
 import com.mss.exam.portal.entity.BaseEntity;
 import com.mss.exam.portal.entity.exam.Answer;
+import com.mss.exam.portal.entity.exam.Exam;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -96,6 +97,14 @@ public class ExamAttempt extends BaseEntity {
             foreignKey = @ForeignKey(name = "FK_EXAM_ATTEMPTS_ENROLLMENT")
     )
     private Enrollment enrollment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "EXAM_ID",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "FK_EXAM_ATTEMPTS_EXAM")
+    )
+    private Exam exam;
 
     @OneToMany(mappedBy = "attempt", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
