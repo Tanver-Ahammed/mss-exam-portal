@@ -24,10 +24,10 @@ import lombok.Setter;
  */
 @Entity
 @Table(
-    name = "OPTIONS",
-    indexes = {
-        @Index(name = "IDX_OPTIONS_QUESTION_ID", columnList = "QUESTION_ID")
-    }
+        name = "OPTIONS",
+        indexes = {
+                @Index(name = "IDX_OPTIONS_QUESTION_ID", columnList = "QUESTION_ID")
+        }
 )
 @Getter
 @Setter
@@ -45,7 +45,9 @@ public class Option extends BaseEntity {
     @Builder.Default
     private boolean correct = false;
 
-    /** Optional image associated with this answer option. */
+    /**
+     * Optional image associated with this answer option.
+     */
     @Column(name = "IMAGE_URL")
     private String imageUrl;
 
@@ -57,9 +59,9 @@ public class Option extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "QUESTION_ID",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "FK_OPTIONS_QUESTION")
+            name = "QUESTION_ID",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "FK_OPTIONS_QUESTION")
     )
     private Question question;
 }

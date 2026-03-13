@@ -8,11 +8,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
@@ -49,12 +48,11 @@ import java.util.List;
  */
 @Entity
 @Table(
-    name = "EXAMS",
-    indexes = {
-        @Index(name = "IDX_EXAMS_EXAM_TYPE",     columnList = "EXAM_TYPE"),
-        @Index(name = "IDX_EXAMS_START_TIME",    columnList = "EXAM_START_TIME"),
-        @Index(name = "IDX_EXAMS_CREATED_BY_ID", columnList = "CREATED_BY_ID")
-    }
+        name = "EXAMS",
+        indexes = {
+                @Index(name = "IDX_EXAMS_EXAM_TYPE", columnList = "EXAM_TYPE"),
+                @Index(name = "IDX_EXAMS_START_TIME", columnList = "EXAM_START_TIME")
+        }
 )
 @Getter
 @Setter
@@ -147,13 +145,14 @@ public class Exam extends BaseEntity {
 
     // ── Relationships ─────────────────────────────────────────────────────────
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-        name = "CREATED_BY_ID",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "FK_EXAMS_CREATED_BY")
+    @ManyToMany
+    @JoinTable(
+            name = "EXAM_CONDUCTORS",
+            joinColumns = @JoinColumn(name = "EXAM_ID"),
+            inverseJoinColumns = @JoinColumn(name = "USER_ID")
     )
-    private User createdBy;
+    @Builder.Default
+    private List<User> conductedBy = new ArrayList<>();
 
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("orderNo ASC")

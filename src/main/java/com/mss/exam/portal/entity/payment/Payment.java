@@ -45,14 +45,14 @@ import java.util.List;
  */
 @Entity
 @Table(
-    name = "PAYMENTS",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "UQ_PAYMENTS_ENROLLMENT_ID", columnNames = "ENROLLMENT_ID")
-    },
-    indexes = {
-        @Index(name = "IDX_PAYMENTS_ENROLLMENT_ID", columnList = "ENROLLMENT_ID"),
-        @Index(name = "IDX_PAYMENTS_STATUS",        columnList = "STATUS")
-    }
+        name = "PAYMENTS",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "UQ_PAYMENTS_ENROLLMENT_ID", columnNames = "ENROLLMENT_ID")
+        },
+        indexes = {
+                @Index(name = "IDX_PAYMENTS_ENROLLMENT_ID", columnList = "ENROLLMENT_ID"),
+                @Index(name = "IDX_PAYMENTS_STATUS", columnList = "STATUS")
+        }
 )
 @Getter
 @Setter
@@ -62,12 +62,16 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Payment extends BaseEntity {
 
-    /** Total amount due for this enrollment (copied from exam fee at enroll time). */
+    /**
+     * Total amount due for this enrollment (copied from exam fee at enroll time).
+     */
     @DecimalMin("0.00")
     @Column(name = "AMOUNT_DUE", nullable = false, precision = 10, scale = 2)
     private BigDecimal amountDue;
 
-    /** Running total of all SUCCEEDED transaction amounts. */
+    /**
+     * Running total of all SUCCEEDED transaction amounts.
+     */
     @Column(name = "AMOUNT_PAID", nullable = false, precision = 10, scale = 2)
     @Builder.Default
     private BigDecimal amountPaid = BigDecimal.ZERO;
@@ -93,9 +97,9 @@ public class Payment extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "ENROLLMENT_ID",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "FK_PAYMENTS_ENROLLMENT")
+            name = "ENROLLMENT_ID",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "FK_PAYMENTS_ENROLLMENT")
     )
     private Enrollment enrollment;
 

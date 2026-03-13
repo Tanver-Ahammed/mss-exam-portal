@@ -34,11 +34,11 @@ import java.util.List;
  */
 @Entity
 @Table(
-    name = "QUESTIONS",
-    indexes = {
-        @Index(name = "IDX_QUESTIONS_EXAM_ID",  columnList = "EXAM_ID"),
-        @Index(name = "IDX_QUESTIONS_ORDER_NO", columnList = "ORDER_NO")
-    }
+        name = "QUESTIONS",
+        indexes = {
+                @Index(name = "IDX_QUESTIONS_EXAM_ID", columnList = "EXAM_ID"),
+                @Index(name = "IDX_QUESTIONS_ORDER_NO", columnList = "ORDER_NO")
+        }
 )
 @Getter
 @Setter
@@ -68,7 +68,9 @@ public class Question extends BaseEntity {
     @Column(name = "EXPLANATION", columnDefinition = "TEXT")
     private String explanation;
 
-    /** Comma-separated accepted keywords used for auto-grading SHORT_ANSWER questions. */
+    /**
+     * Comma-separated accepted keywords used for auto-grading SHORT_ANSWER questions.
+     */
     @Column(name = "ANSWER_KEYWORDS", columnDefinition = "TEXT")
     private String answerKeywords;
 
@@ -83,9 +85,9 @@ public class Question extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "EXAM_ID",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "FK_QUESTIONS_EXAM")
+            name = "EXAM_ID",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "FK_QUESTIONS_EXAM")
     )
     private Exam exam;
 

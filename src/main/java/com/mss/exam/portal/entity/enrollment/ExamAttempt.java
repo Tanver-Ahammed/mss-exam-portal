@@ -26,20 +26,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents one student sitting of an {@link Exam}.
+ * Represents one student sitting of an {@link com.mss.exam.portal.entity.exam.Exam}.
  *
  * <p>Uses JPA optimistic locking ({@code @Version}) to prevent concurrent
  * double-submission when a student submits from two browser tabs simultaneously.
  *
- * <p>Table: {@code ATTEMPTS}
+ * <p>Table: {@code EXAM_ATTEMPTS}
  */
 @Entity
 @Table(
-    name = "ATTEMPTS",
-    indexes = {
-        @Index(name = "IDX_ATTEMPTS_ENROLLMENT_ID", columnList = "ENROLLMENT_ID"),
-        @Index(name = "IDX_ATTEMPTS_STARTED_AT",    columnList = "STARTED_AT")
-    }
+        name = "EXAM_ATTEMPTS",
+        indexes = {
+                @Index(name = "IDX_EXAM_ATTEMPTS_ENROLLMENT_ID", columnList = "ENROLLMENT_ID"),
+                @Index(name = "IDX_EXAM_ATTEMPTS_STARTED_AT", columnList = "STARTED_AT")
+        }
 )
 @Getter
 @Setter
@@ -47,7 +47,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class Attempt extends BaseEntity {
+public class ExamAttempt extends BaseEntity {
 
     @Min(1)
     @Column(name = "ATTEMPT_NUMBER", nullable = false)
@@ -59,7 +59,6 @@ public class Attempt extends BaseEntity {
     @Column(name = "SUBMITTED_AT")
     private LocalDateTime submittedAt;
 
-    /** Total marks awarded after grading (MCQ: auto-graded, WRITTEN: manual). */
     @Column(name = "SCORE")
     private Integer score;
 
@@ -77,18 +76,12 @@ public class Attempt extends BaseEntity {
     @Builder.Default
     private boolean graded = false;
 
-    /** Client IP at submit time — stored for proctoring / audit. */
     @Column(name = "IP_ADDRESS", length = 45)
     private String ipAddress;
 
-    /** S3 URL of the generated PDF certificate (set after grading passes). */
     @Column(name = "CERTIFICATE_URL")
     private String certificateUrl;
 
-    /**
-     * JPA optimistic-lock version column.
-     * Prevents two concurrent requests from both submitting the same attempt.
-     */
     @Version
     @Column(name = "VERSION", nullable = false)
     @Builder.Default
@@ -98,9 +91,9 @@ public class Attempt extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "ENROLLMENT_ID",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "FK_ATTEMPTS_ENROLLMENT")
+            name = "ENROLLMENT_ID",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "FK_EXAM_ATTEMPTS_ENROLLMENT")
     )
     private Enrollment enrollment;
 
@@ -108,11 +101,6 @@ public class Attempt extends BaseEntity {
     @Builder.Default
     private List<Answer> answers = new ArrayList<>();
 
-    /**
-     * Convenience collection — all submission files across every answer
-     * in this attempt. Avoids joining through {@code answers} for the
-     * examiner's "view all uploads for this sitting" query.
-     */
     @OneToMany(mappedBy = "attempt", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<SubmissionFile> submissionFiles = new ArrayList<>();

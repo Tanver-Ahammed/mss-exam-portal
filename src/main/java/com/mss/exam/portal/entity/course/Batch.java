@@ -18,6 +18,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +28,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,11 +44,11 @@ import java.util.List;
  */
 @Entity
 @Table(
-    name = "BATCHES",
-    indexes = {
-        @Index(name = "IDX_BATCHES_COURSE_ID", columnList = "COURSE_ID"),
-        @Index(name = "IDX_BATCHES_STATUS",    columnList = "STATUS")
-    }
+        name = "BATCHES",
+        indexes = {
+                @Index(name = "IDX_BATCHES_COURSE_ID", columnList = "COURSE_ID"),
+                @Index(name = "IDX_BATCHES_STATUS", columnList = "STATUS")
+        }
 )
 @Getter
 @Setter
@@ -81,23 +84,33 @@ public class Batch extends BaseEntity {
     @Builder.Default
     private Integer skippedCount = 0;
 
+    @DecimalMin("0.0")
+    @Max(100)
+    @Column(name = "DISCOUNT", precision = 5, scale = 2)
+    @Builder.Default
+    private BigDecimal discount = BigDecimal.ZERO;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS", nullable = false, length = 20)
     @Builder.Default
     private BatchStatus status = BatchStatus.UPLOADED;
 
-    /** JSON array of per-row error messages for failed rows. */
+    /**
+     * JSON array of per-row error messages for failed rows.
+     */
     @Column(name = "ERROR_LOG", columnDefinition = "TEXT")
     private String errorLog;
 
     // ── Relationships ─────────────────────────────────────────────────────────
 
-    /** The course this batch belongs to. */
+    /**
+     * The course this batch belongs to.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "COURSE_ID",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "FK_BATCHES_COURSE")
+            name = "COURSE_ID",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "FK_BATCHES_COURSE")
     )
     private Course course;
 
@@ -107,11 +120,11 @@ public class Batch extends BaseEntity {
      */
     @ManyToMany
     @JoinTable(
-        name = "BATCH_EXAMS",
-        joinColumns        = @JoinColumn(name = "BATCH_ID",
-                                foreignKey = @ForeignKey(name = "FK_BATCH_EXAMS_BATCH")),
-        inverseJoinColumns = @JoinColumn(name = "EXAM_ID",
-                                foreignKey = @ForeignKey(name = "FK_BATCH_EXAMS_EXAM"))
+            name = "BATCH_EXAMS",
+            joinColumns = @JoinColumn(name = "BATCH_ID",
+                    foreignKey = @ForeignKey(name = "FK_BATCH_EXAMS_BATCH")),
+            inverseJoinColumns = @JoinColumn(name = "EXAM_ID",
+                    foreignKey = @ForeignKey(name = "FK_BATCH_EXAMS_EXAM"))
     )
     @Builder.Default
     private List<Exam> exams = new ArrayList<>();

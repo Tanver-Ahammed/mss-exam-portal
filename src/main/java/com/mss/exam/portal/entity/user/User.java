@@ -1,6 +1,7 @@
 package com.mss.exam.portal.entity.user;
 
 import com.mss.exam.portal.entity.BaseEntity;
+import com.mss.exam.portal.entity.course.Course;
 import com.mss.exam.portal.entity.enrollment.Enrollment;
 import com.mss.exam.portal.entity.enums.Role;
 import com.mss.exam.portal.entity.exam.Exam;
@@ -10,6 +11,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Index;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -34,15 +36,15 @@ import java.util.List;
  */
 @Entity
 @Table(
-    name = "USERS",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "UQ_USERS_EMAIL",    columnNames = "EMAIL"),
-        @UniqueConstraint(name = "UQ_USERS_USERNAME", columnNames = "USERNAME")
-    },
-    indexes = {
-        @Index(name = "IDX_USERS_EMAIL", columnList = "EMAIL"),
-        @Index(name = "IDX_USERS_ROLE",  columnList = "ROLE")
-    }
+        name = "USERS",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "UQ_USERS_EMAIL", columnNames = "EMAIL"),
+                @UniqueConstraint(name = "UQ_USERS_USERNAME", columnNames = "USERNAME")
+        },
+        indexes = {
+                @Index(name = "IDX_USERS_EMAIL", columnList = "EMAIL"),
+                @Index(name = "IDX_USERS_ROLE", columnList = "ROLE")
+        }
 )
 @Getter
 @Setter
@@ -85,10 +87,6 @@ public class User extends BaseEntity {
 
     // ── Relationships ─────────────────────────────────────────────────────────
 
-    /**
-     * Profile pictures and other user-scoped files.
-     * Call {@code UserFileService#getActiveProfilePicture(user)} for the current avatar.
-     */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<UserFile> userFiles = new ArrayList<>();
@@ -97,7 +95,11 @@ public class User extends BaseEntity {
     @Builder.Default
     private List<Enrollment> enrollments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = false)
+    @ManyToMany(mappedBy = "instructedBy")
     @Builder.Default
-    private List<Exam> createdExams = new ArrayList<>();
+    private List<Course> instructedCourses = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "conductedBy")
+    @Builder.Default
+    private List<Exam> conductedExams = new ArrayList<>();
 }

@@ -36,13 +36,13 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(
-    name = "PAYMENT_TRANSACTIONS",
-    indexes = {
-        @Index(name = "IDX_PAY_TXN_PAYMENT_ID",       columnList = "PAYMENT_ID"),
-        @Index(name = "IDX_PAY_TXN_STATUS",            columnList = "STATUS"),
-        @Index(name = "IDX_PAY_TXN_STRIPE_CHARGE_ID",  columnList = "STRIPE_CHARGE_ID"),
-        @Index(name = "IDX_PAY_TXN_TRANSACTED_AT",     columnList = "TRANSACTED_AT")
-    }
+        name = "PAYMENT_TRANSACTIONS",
+        indexes = {
+                @Index(name = "IDX_PAY_TXN_PAYMENT_ID", columnList = "PAYMENT_ID"),
+                @Index(name = "IDX_PAY_TXN_STATUS", columnList = "STATUS"),
+                @Index(name = "IDX_PAY_TXN_STRIPE_CHARGE_ID", columnList = "STRIPE_CHARGE_ID"),
+                @Index(name = "IDX_PAY_TXN_TRANSACTED_AT", columnList = "TRANSACTED_AT")
+        }
 )
 @Getter
 @Setter
@@ -52,15 +52,21 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 public class PaymentTransaction extends BaseEntity {
 
-    /** Stripe {@code ch_xxx} or {@code re_xxx} identifier. */
+    /**
+     * Stripe {@code ch_xxx} or {@code re_xxx} identifier.
+     */
     @Column(name = "STRIPE_CHARGE_ID", length = 100)
     private String stripeChargeId;
 
-    /** Stripe {@code pi_xxx} PaymentIntent identifier. */
+    /**
+     * Stripe {@code pi_xxx} PaymentIntent identifier.
+     */
     @Column(name = "STRIPE_PAYMENT_INTENT_ID", length = 100)
     private String stripePaymentIntentId;
 
-    /** Stripe {@code re_xxx} Refund identifier — populated on refund transactions. */
+    /**
+     * Stripe {@code re_xxx} Refund identifier — populated on refund transactions.
+     */
     @Column(name = "STRIPE_REFUND_ID", length = 100)
     private String stripeRefundId;
 
@@ -85,11 +91,15 @@ public class PaymentTransaction extends BaseEntity {
     @Column(name = "PAYMENT_METHOD", length = 50)
     private String paymentMethod;
 
-    /** Card / wallet description for display, e.g. {@code Visa ···4242}. */
+    /**
+     * Card / wallet description for display, e.g. {@code Visa ···4242}.
+     */
     @Column(name = "PAYMENT_METHOD_DETAIL", length = 100)
     private String paymentMethodDetail;
 
-    /** Timestamp when Stripe confirmed or failed the charge. */
+    /**
+     * Timestamp when Stripe confirmed or failed the charge.
+     */
     @Column(name = "TRANSACTED_AT")
     private LocalDateTime transactedAt;
 
@@ -111,9 +121,9 @@ public class PaymentTransaction extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "PAYMENT_ID",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "FK_PAY_TXN_PAYMENT")
+            name = "PAYMENT_ID",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "FK_PAY_TXN_PAYMENT")
     )
     private Payment payment;
 }

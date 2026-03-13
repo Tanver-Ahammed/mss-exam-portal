@@ -7,11 +7,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Index;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ForeignKey;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,11 +34,10 @@ import java.util.List;
  */
 @Entity
 @Table(
-    name = "COURSES",
-    indexes = {
-        @Index(name = "IDX_COURSES_CODE",       columnList = "CODE"),
-        @Index(name = "IDX_COURSES_CREATED_BY", columnList = "CREATED_BY_ID")
-    }
+        name = "COURSES",
+        indexes = {
+                @Index(name = "IDX_COURSES_CODE", columnList = "CODE")
+        }
 )
 @Getter
 @Setter
@@ -51,7 +52,9 @@ public class Course extends BaseEntity {
     @Column(name = "TITLE", nullable = false, length = 200)
     private String title;
 
-    /** Short unique code, e.g. {@code JAVA-SPRING-01}. */
+    /**
+     * Short unique code, e.g. {@code JAVA-SPRING-01}.
+     */
     @NotBlank
     @Size(max = 50)
     @Column(name = "CODE", nullable = false, unique = true, length = 50)
@@ -63,20 +66,25 @@ public class Course extends BaseEntity {
     @Column(name = "THUMBNAIL_URL")
     private String thumbnailUrl;
 
+    @DecimalMin("0.0")
+    @Column(name = "COURSE_FEE", precision = 10, scale = 2)
+    @Builder.Default
+    private BigDecimal courseFee = BigDecimal.ZERO;
+
     @Column(name = "IS_ACTIVE", nullable = false)
     @Builder.Default
     private boolean active = true;
 
     // ── Relationships ─────────────────────────────────────────────────────────
 
-    /** Instructor who owns the course. */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-        name = "CREATED_BY_ID",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "FK_COURSES_CREATED_BY")
+    @ManyToMany
+    @JoinTable(
+            name = "COURSE_INSTRUCTORS",
+            joinColumns = @JoinColumn(name = "COURSE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "USER_ID")
     )
-    private User createdBy;
+    @Builder.Default
+    private List<User> instructedBy = new ArrayList<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

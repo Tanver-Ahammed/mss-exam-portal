@@ -39,19 +39,19 @@ import java.util.List;
  */
 @Entity
 @Table(
-    name = "ENROLLMENTS",
-    uniqueConstraints = {
-        @UniqueConstraint(
-            name = "UQ_ENROLLMENT_STUDENT_EXAM",
-            columnNames = {"STUDENT_ID", "EXAM_ID"}
-        )
-    },
-    indexes = {
-        @Index(name = "IDX_ENROLLMENTS_STUDENT_ID", columnList = "STUDENT_ID"),
-        @Index(name = "IDX_ENROLLMENTS_EXAM_ID",    columnList = "EXAM_ID"),
-        @Index(name = "IDX_ENROLLMENTS_BATCH_ID",   columnList = "BATCH_ID"),
-        @Index(name = "IDX_ENROLLMENTS_STATUS",     columnList = "STATUS")
-    }
+        name = "ENROLLMENTS",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "UQ_ENROLLMENT_STUDENT_EXAM",
+                        columnNames = {"STUDENT_ID", "EXAM_ID"}
+                )
+        },
+        indexes = {
+                @Index(name = "IDX_ENROLLMENTS_STUDENT_ID", columnList = "STUDENT_ID"),
+                @Index(name = "IDX_ENROLLMENTS_EXAM_ID", columnList = "EXAM_ID"),
+                @Index(name = "IDX_ENROLLMENTS_BATCH_ID", columnList = "BATCH_ID"),
+                @Index(name = "IDX_ENROLLMENTS_STATUS", columnList = "STATUS")
+        }
 )
 @Getter
 @Setter
@@ -76,7 +76,9 @@ public class Enrollment extends BaseEntity {
     @Column(name = "EXPIRES_AT")
     private LocalDateTime expiresAt;
 
-    /** {@code true} when fee is waived (scholarship / admin override). */
+    /**
+     * {@code true} when fee is waived (scholarship / admin override).
+     */
     @Column(name = "IS_FEE_WAIVED", nullable = false)
     @Builder.Default
     private boolean feeWaived = false;
@@ -85,33 +87,35 @@ public class Enrollment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "STUDENT_ID",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "FK_ENROLLMENTS_STUDENT")
+            name = "STUDENT_ID",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "FK_ENROLLMENTS_STUDENT")
     )
     private User student;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "EXAM_ID",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "FK_ENROLLMENTS_EXAM")
+            name = "EXAM_ID",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "FK_ENROLLMENTS_EXAM")
     )
     private Exam exam;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "BATCH_ID",
-        foreignKey = @ForeignKey(name = "FK_ENROLLMENTS_BATCH")
+            name = "BATCH_ID",
+            foreignKey = @ForeignKey(name = "FK_ENROLLMENTS_BATCH")
     )
     private Batch batch;
 
     @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<Attempt> attempts = new ArrayList<>();
+    private List<ExamAttempt> attempts = new ArrayList<>();
 
-    /** One enrollment has one payment record (which can have many transactions). */
+    /**
+     * One enrollment has one payment record (which can have many transactions).
+     */
     @OneToOne(mappedBy = "enrollment", cascade = CascadeType.ALL,
-              orphanRemoval = true, fetch = FetchType.LAZY)
+            orphanRemoval = true, fetch = FetchType.LAZY)
     private Payment payment;
 }
