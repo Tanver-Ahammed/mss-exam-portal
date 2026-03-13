@@ -38,12 +38,12 @@ import lombok.Setter;
  */
 @Entity
 @Table(
-    name = "SUBMISSION_FILES",
-    indexes = {
-        @Index(name = "IDX_SUB_FILES_ANSWER_ID",  columnList = "ANSWER_ID"),
-        @Index(name = "IDX_SUB_FILES_ATTEMPT_ID", columnList = "ATTEMPT_ID"),
-        @Index(name = "IDX_SUB_FILES_FILE_TYPE",  columnList = "FILE_TYPE")
-    }
+        name = "SUBMISSION_FILES",
+        indexes = {
+                @Index(name = "IDX_SUB_FILES_ANSWER_ID", columnList = "ANSWER_ID"),
+                @Index(name = "IDX_SUB_FILES_ATTEMPT_ID", columnList = "ATTEMPT_ID"),
+                @Index(name = "IDX_SUB_FILES_FILE_TYPE", columnList = "FILE_TYPE")
+        }
 )
 @Getter
 @Setter
@@ -61,7 +61,9 @@ public class SubmissionFile extends BaseEntity {
     @Column(name = "S3_OBJECT_KEY", nullable = false)
     private String s3ObjectKey;
 
-    /** Accessible download URL (CDN or pre-signed S3 URL). */
+    /**
+     * Accessible download URL (CDN or pre-signed S3 URL).
+     */
     @NotBlank
     @Column(name = "FILE_URL", nullable = false)
     private String fileUrl;
@@ -78,11 +80,15 @@ public class SubmissionFile extends BaseEntity {
     @Column(name = "CONTENT_TYPE", nullable = false, length = 100)
     private String contentType;
 
-    /** File size in bytes — service layer rejects files larger than 20 MB. */
+    /**
+     * File size in bytes — service layer rejects files larger than 20 MB.
+     */
     @Column(name = "FILE_SIZE_BYTES")
     private Long fileSizeBytes;
 
-    /** {@code SUBMISSION_PDF} or {@code SUBMISSION_IMAGE}. */
+    /**
+     * {@code SUBMISSION_PDF} or {@code SUBMISSION_IMAGE}.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "FILE_TYPE", nullable = false, length = 30)
     private FileType fileType;
@@ -104,30 +110,34 @@ public class SubmissionFile extends BaseEntity {
     @Builder.Default
     private boolean reviewed = false;
 
-    /** Thumbnail URL generated server-side after upload (image types only). */
+    /**
+     * Thumbnail URL generated server-side after upload (image types only).
+     */
     @Column(name = "THUMBNAIL_URL")
     private String thumbnailUrl;
 
     // ── Relationships ─────────────────────────────────────────────────────────
 
-    /** The specific answer this file belongs to. */
+    /**
+     * The specific answer this file belongs to.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "ANSWER_ID",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "FK_SUB_FILES_ANSWER")
+            name = "ANSWER_ID",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "FK_SUB_FILES_ANSWER")
     )
     private Answer answer;
 
     /**
-     * Redundant FK to {@link Attempt} — enables a single
+     * Redundant FK to {@link ExamAttempt} — enables a single
      * "give me all files for this sitting" query without joining through answers.
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "ATTEMPT_ID",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "FK_SUB_FILES_ATTEMPT")
+            name = "ATTEMPT_ID",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "FK_SUB_FILES_ATTEMPT")
     )
-    private Attempt attempt;
+    private ExamAttempt attempt;
 }

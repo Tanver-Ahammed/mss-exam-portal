@@ -1,7 +1,7 @@
 package com.mss.exam.portal.entity.exam;
 
 import com.mss.exam.portal.entity.BaseEntity;
-import com.mss.exam.portal.entity.enrollment.Attempt;
+import com.mss.exam.portal.entity.enrollment.ExamAttempt;
 import com.mss.exam.portal.entity.enrollment.SubmissionFile;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Records a student's response to one {@link Question} within an {@link Attempt}.
+ * Records a student's response to one {@link Question} within an {@link ExamAttempt}.
  *
  * <ul>
  *   <li><b>MCQ</b>           — {@code selectedOption} is populated; text fields are null.</li>
@@ -39,17 +39,17 @@ import java.util.List;
  */
 @Entity
 @Table(
-    name = "ANSWERS",
-    uniqueConstraints = {
-        @UniqueConstraint(
-            name = "UQ_ANSWERS_ATTEMPT_QUESTION",
-            columnNames = {"ATTEMPT_ID", "QUESTION_ID"}
-        )
-    },
-    indexes = {
-        @Index(name = "IDX_ANSWERS_ATTEMPT_ID",  columnList = "ATTEMPT_ID"),
-        @Index(name = "IDX_ANSWERS_QUESTION_ID", columnList = "QUESTION_ID")
-    }
+        name = "ANSWERS",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "UQ_ANSWERS_ATTEMPT_QUESTION",
+                        columnNames = {"ATTEMPT_ID", "QUESTION_ID"}
+                )
+        },
+        indexes = {
+                @Index(name = "IDX_ANSWERS_ATTEMPT_ID", columnList = "ATTEMPT_ID"),
+                @Index(name = "IDX_ANSWERS_QUESTION_ID", columnList = "QUESTION_ID")
+        }
 )
 @Getter
 @Setter
@@ -59,23 +59,33 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Answer extends BaseEntity {
 
-    /** Free-text response for SHORT_ANSWER questions. */
+    /**
+     * Free-text response for SHORT_ANSWER questions.
+     */
     @Column(name = "TEXT_ANSWER", columnDefinition = "TEXT")
     private String textAnswer;
 
-    /** Marks awarded by auto-grader (MCQ) or examiner (WRITTEN). */
+    /**
+     * Marks awarded by auto-grader (MCQ) or examiner (WRITTEN).
+     */
     @Column(name = "MARKS_AWARDED")
     private Integer marksAwarded;
 
-    /** {@code true} = correct, {@code false} = wrong, {@code null} = not yet graded. */
+    /**
+     * {@code true} = correct, {@code false} = wrong, {@code null} = not yet graded.
+     */
     @Column(name = "IS_CORRECT")
     private Boolean correct;
 
-    /** Examiner feedback shown to student after grading is released. */
+    /**
+     * Examiner feedback shown to student after grading is released.
+     */
     @Column(name = "EXAMINER_FEEDBACK", columnDefinition = "TEXT")
     private String examinerFeedback;
 
-    /** Flagged by student for review before final submission. */
+    /**
+     * Flagged by student for review before final submission.
+     */
     @Column(name = "IS_FLAGGED", nullable = false)
     @Builder.Default
     private boolean flagged = false;
@@ -84,25 +94,27 @@ public class Answer extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "ATTEMPT_ID",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "FK_ANSWERS_ATTEMPT")
+            name = "ATTEMPT_ID",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "FK_ANSWERS_ATTEMPT")
     )
-    private Attempt attempt;
+    private ExamAttempt attempt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "QUESTION_ID",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "FK_ANSWERS_QUESTION")
+            name = "QUESTION_ID",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "FK_ANSWERS_QUESTION")
     )
     private Question question;
 
-    /** Selected MCQ option — {@code null} for text-based and written answers. */
+    /**
+     * Selected MCQ option — {@code null} for text-based and written answers.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "SELECTED_OPTION_ID",
-        foreignKey = @ForeignKey(name = "FK_ANSWERS_OPTION")
+            name = "SELECTED_OPTION_ID",
+            foreignKey = @ForeignKey(name = "FK_ANSWERS_OPTION")
     )
     private Option selectedOption;
 

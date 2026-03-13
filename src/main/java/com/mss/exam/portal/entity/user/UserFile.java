@@ -32,12 +32,12 @@ import lombok.Setter;
  */
 @Entity
 @Table(
-    name = "USER_FILES",
-    indexes = {
-        @Index(name = "IDX_USER_FILES_USER_ID",   columnList = "USER_ID"),
-        @Index(name = "IDX_USER_FILES_FILE_TYPE",  columnList = "FILE_TYPE"),
-        @Index(name = "IDX_USER_FILES_IS_ACTIVE",  columnList = "IS_ACTIVE")
-    }
+        name = "USER_FILES",
+        indexes = {
+                @Index(name = "IDX_USER_FILES_USER_ID", columnList = "USER_ID"),
+                @Index(name = "IDX_USER_FILES_FILE_TYPE", columnList = "FILE_TYPE"),
+                @Index(name = "IDX_USER_FILES_IS_ACTIVE", columnList = "IS_ACTIVE")
+        }
 )
 @Getter
 @Setter
@@ -47,12 +47,16 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = true)
 public class UserFile extends BaseEntity {
 
-    /** S3 / MinIO object key, e.g. {@code users/{uuid}/profile/avatar.jpg}. */
+    /**
+     * S3 / MinIO object key, e.g. {@code users/{uuid}/profile/avatar.jpg}.
+     */
     @NotBlank
     @Column(name = "S3_OBJECT_KEY", nullable = false)
     private String s3ObjectKey;
 
-    /** Public CDN URL or pre-signed URL cached at upload time. */
+    /**
+     * Public CDN URL or pre-signed URL cached at upload time.
+     */
     @NotBlank
     @Column(name = "FILE_URL", nullable = false)
     private String fileUrl;
@@ -61,11 +65,15 @@ public class UserFile extends BaseEntity {
     @Column(name = "ORIGINAL_FILENAME", nullable = false, length = 255)
     private String originalFilename;
 
-    /** MIME type — e.g. {@code image/jpeg}, {@code image/png}. */
+    /**
+     * MIME type — e.g. {@code image/jpeg}, {@code image/png}.
+     */
     @Column(name = "CONTENT_TYPE", nullable = false, length = 100)
     private String contentType;
 
-    /** File size in bytes. */
+    /**
+     * File size in bytes.
+     */
     @Column(name = "FILE_SIZE_BYTES")
     private Long fileSizeBytes;
 
@@ -81,9 +89,9 @@ public class UserFile extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "USER_ID",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "FK_USER_FILES_USER")
+            name = "USER_ID",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "FK_USER_FILES_USER")
     )
     private User user;
 }
