@@ -1,5 +1,6 @@
 package com.mss.exam.portal.entity;
 
+import com.mss.exam.portal.entity.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;

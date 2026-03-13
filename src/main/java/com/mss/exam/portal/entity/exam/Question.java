@@ -1,5 +1,6 @@
-package com.mss.exam.portal.entity;
+package com.mss.exam.portal.entity.exam;
 
+import com.mss.exam.portal.entity.BaseEntity;
 import com.mss.exam.portal.entity.enums.QuestionType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
