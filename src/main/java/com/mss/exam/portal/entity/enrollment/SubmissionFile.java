@@ -1,6 +1,8 @@
-package com.mss.exam.portal.entity;
+package com.mss.exam.portal.entity.enrollment;
 
+import com.mss.exam.portal.entity.BaseEntity;
 import com.mss.exam.portal.entity.enums.FileType;
+import com.mss.exam.portal.entity.exam.Answer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

@@ -1,5 +1,7 @@
-package com.mss.exam.portal.entity;
+package com.mss.exam.portal.entity.course;
 
+import com.mss.exam.portal.entity.BaseEntity;
+import com.mss.exam.portal.entity.user.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,6 +16,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,6 +43,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(callSuper = true)
 public class Course extends BaseEntity {
 
     @NotBlank

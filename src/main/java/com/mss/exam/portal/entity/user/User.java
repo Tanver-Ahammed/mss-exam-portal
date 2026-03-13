@@ -1,6 +1,9 @@
-package com.mss.exam.portal.entity;
+package com.mss.exam.portal.entity.user;
 
+import com.mss.exam.portal.entity.BaseEntity;
+import com.mss.exam.portal.entity.enrollment.Enrollment;
 import com.mss.exam.portal.entity.enums.Role;
+import com.mss.exam.portal.entity.exam.Exam;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

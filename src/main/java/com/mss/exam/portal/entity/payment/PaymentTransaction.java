@@ -1,5 +1,6 @@
-package com.mss.exam.portal.entity;
+package com.mss.exam.portal.entity.payment;
 
+import com.mss.exam.portal.entity.BaseEntity;
 import com.mss.exam.portal.entity.enums.TransactionStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
