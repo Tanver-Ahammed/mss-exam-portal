@@ -1,5 +1,5 @@
 -- =============================================================================
---  EXAM PORTAL — PostgreSQL DDL  (v3 — clean rewrite)
+--  EXAM PORTAL — PostgreSQL DDL  (v4 — Long ID)
 --  Package : com.mss.exam.portal
 --  Requires: PostgreSQL 15+
 --  Naming  : ALL_CAPS tables & columns
@@ -28,7 +28,6 @@ DROP TABLE IF EXISTS QUESTIONS CASCADE;
 DROP TABLE IF EXISTS EXAM_CONDUCTORS CASCADE;
 DROP TABLE IF EXISTS EXAMS CASCADE;
 DROP TABLE IF EXISTS BATCHES CASCADE;
-DROP TABLE IF EXISTS COURSE_INSTRUCTORS CASCADE;
 DROP TABLE IF EXISTS COURSE_CATEGORY_MAPPINGS CASCADE;
 DROP TABLE IF EXISTS COURSES CASCADE;
 DROP TABLE IF EXISTS COURSE_CATEGORIES CASCADE;
@@ -38,27 +37,27 @@ DROP TABLE IF EXISTS USERS CASCADE;
 
 -- =============================================================================
 --  1. USERS
---  Audit columns are plain UUID here (no FK) — USERS is the root table;
+--  Audit columns are plain BIGINT here (no FK) — USERS is the root table;
 --  a self-referencing FK would cause a circular dependency on first INSERT.
 -- =============================================================================
 CREATE TABLE USERS
 (
-    ID                 UUID         NOT NULL DEFAULT gen_random_uuid(),
+    ID BIGSERIAL NOT NULL,
     USERNAME           VARCHAR(50)  NOT NULL,
     EMAIL              VARCHAR(120) NOT NULL,
     PASSWORD_HASH      VARCHAR(255) NOT NULL,
-    FIRST_NAME       VARCHAR(80) NOT NULL,
-    LAST_NAME        VARCHAR(80) NOT NULL,
-    FIRST_NAME_LOCAL VARCHAR(80),
-    LAST_NAME_LOCAL  VARCHAR(80),
+    FIRST_NAME         VARCHAR(80),
+    LAST_NAME          VARCHAR(80),
+    FIRST_NAME_LOCAL   VARCHAR(80),
+    LAST_NAME_LOCAL    VARCHAR(80),
     PHONE              VARCHAR(20),
     ROLE               VARCHAR(30)  NOT NULL,
     IS_ACTIVE          BOOLEAN      NOT NULL DEFAULT TRUE,
     IS_DELETED         BOOLEAN      NOT NULL DEFAULT FALSE,
     CREATED_AT         TIMESTAMP    NOT NULL DEFAULT NOW(),
     UPDATED_AT         TIMESTAMP,
-    CREATED_BY_USER_ID UUID, -- no FK, root table
-    UPDATED_BY_USER_ID UUID, -- no FK, root table
+    CREATED_BY_USER_ID BIGINT, -- no FK, root table
+    UPDATED_BY_USER_ID BIGINT, -- no FK, root table
 
     CONSTRAINT PK_USERS PRIMARY KEY (ID),
     CONSTRAINT UQ_USERS_EMAIL UNIQUE (EMAIL),
@@ -80,8 +79,8 @@ CREATE INDEX IDX_USERS_ROLE ON USERS (ROLE);
 -- =============================================================================
 CREATE TABLE USER_FILES
 (
-    ID                 UUID         NOT NULL DEFAULT gen_random_uuid(),
-    USER_ID            UUID         NOT NULL,
+    ID      BIGSERIAL NOT NULL,
+    USER_ID BIGINT    NOT NULL,
     S3_OBJECT_KEY      VARCHAR(500) NOT NULL,
     FILE_URL           VARCHAR(500) NOT NULL,
     ORIGINAL_FILENAME  VARCHAR(255) NOT NULL,
@@ -92,8 +91,8 @@ CREATE TABLE USER_FILES
     IS_DELETED         BOOLEAN      NOT NULL DEFAULT FALSE,
     CREATED_AT         TIMESTAMP    NOT NULL DEFAULT NOW(),
     UPDATED_AT         TIMESTAMP,
-    CREATED_BY_USER_ID UUID,
-    UPDATED_BY_USER_ID UUID,
+    CREATED_BY_USER_ID BIGINT,
+    UPDATED_BY_USER_ID BIGINT,
 
     CONSTRAINT PK_USER_FILES PRIMARY KEY (ID),
     CONSTRAINT FK_USER_FILES_USER FOREIGN KEY (USER_ID) REFERENCES USERS (ID),
@@ -120,17 +119,17 @@ CREATE INDEX IDX_USER_FILES_IS_ACTIVE ON USER_FILES (IS_ACTIVE);
 -- =============================================================================
 CREATE TABLE COURSE_CATEGORIES
 (
-    ID                 UUID         NOT NULL DEFAULT gen_random_uuid(),
+    ID                 BIGSERIAL    NOT NULL,
     NAME               VARCHAR(100) NOT NULL,
-    NAME_LOCAL VARCHAR(100) NOT NULL,
+    NAME_LOCAL         VARCHAR(100) NOT NULL,
     DESCRIPTION        VARCHAR(500),
     DISPLAY_ORDER      INTEGER      NOT NULL DEFAULT 0,
     IS_ACTIVE          BOOLEAN      NOT NULL DEFAULT TRUE,
     IS_DELETED         BOOLEAN      NOT NULL DEFAULT FALSE,
     CREATED_AT         TIMESTAMP    NOT NULL DEFAULT NOW(),
     UPDATED_AT         TIMESTAMP,
-    CREATED_BY_USER_ID UUID,
-    UPDATED_BY_USER_ID UUID,
+    CREATED_BY_USER_ID BIGINT,
+    UPDATED_BY_USER_ID BIGINT,
 
     CONSTRAINT PK_COURSE_CATEGORIES PRIMARY KEY (ID),
     CONSTRAINT UQ_COURSE_CATEGORIES_NAME UNIQUE (NAME),
@@ -148,7 +147,7 @@ CREATE INDEX IDX_COURSE_CATEGORIES_NAME ON COURSE_CATEGORIES (NAME);
 -- =============================================================================
 CREATE TABLE COURSES
 (
-    ID                 UUID           NOT NULL DEFAULT gen_random_uuid(),
+    ID          BIGSERIAL    NOT NULL,
     TITLE              VARCHAR(200)   NOT NULL,
     TITLE_LOCAL VARCHAR(200) NOT NULL,
     CODE               VARCHAR(50)    NOT NULL,
@@ -159,8 +158,8 @@ CREATE TABLE COURSES
     IS_DELETED         BOOLEAN        NOT NULL DEFAULT FALSE,
     CREATED_AT         TIMESTAMP      NOT NULL DEFAULT NOW(),
     UPDATED_AT         TIMESTAMP,
-    CREATED_BY_USER_ID UUID,
-    UPDATED_BY_USER_ID UUID,
+    CREATED_BY_USER_ID BIGINT,
+    UPDATED_BY_USER_ID BIGINT,
 
     CONSTRAINT PK_COURSES PRIMARY KEY (ID),
     CONSTRAINT UQ_COURSES_CODE UNIQUE (CODE),
@@ -179,8 +178,8 @@ CREATE INDEX IDX_COURSES_CODE ON COURSES (CODE);
 -- =============================================================================
 CREATE TABLE COURSE_CATEGORY_MAPPINGS
 (
-    CATEGORY_ID UUID NOT NULL,
-    COURSE_ID   UUID NOT NULL,
+    CATEGORY_ID BIGINT NOT NULL,
+    COURSE_ID   BIGINT NOT NULL,
 
     CONSTRAINT PK_COURSE_CATEGORY_MAPPINGS PRIMARY KEY (CATEGORY_ID, COURSE_ID),
     CONSTRAINT FK_COURSE_CATEGORY_MAPPINGS_CATEGORY FOREIGN KEY (CATEGORY_ID) REFERENCES COURSE_CATEGORIES (ID),
@@ -191,12 +190,12 @@ CREATE INDEX IDX_COURSE_CATEGORY_MAPPINGS_COURSE_ID ON COURSE_CATEGORY_MAPPINGS 
 
 
 -- =============================================================================
---  4. BATCHES
+--  5. BATCHES
 -- =============================================================================
 CREATE TABLE BATCHES
 (
-    ID                 UUID          NOT NULL DEFAULT gen_random_uuid(),
-    COURSE_ID          UUID          NOT NULL,
+    ID         BIGSERIAL    NOT NULL,
+    COURSE_ID  BIGINT       NOT NULL,
     NAME               VARCHAR(150)  NOT NULL,
     NAME_LOCAL VARCHAR(150) NOT NULL,
     CSV_FILENAME       VARCHAR(255)  NOT NULL,
@@ -211,8 +210,8 @@ CREATE TABLE BATCHES
     IS_DELETED         BOOLEAN       NOT NULL DEFAULT FALSE,
     CREATED_AT         TIMESTAMP     NOT NULL DEFAULT NOW(),
     UPDATED_AT         TIMESTAMP,
-    CREATED_BY_USER_ID UUID,
-    UPDATED_BY_USER_ID UUID,
+    CREATED_BY_USER_ID BIGINT,
+    UPDATED_BY_USER_ID BIGINT,
 
     CONSTRAINT PK_BATCHES PRIMARY KEY (ID),
     CONSTRAINT FK_BATCHES_COURSE FOREIGN KEY (COURSE_ID) REFERENCES COURSES (ID),
@@ -235,13 +234,13 @@ CREATE INDEX IDX_BATCHES_STATUS ON BATCHES (STATUS);
 
 
 -- =============================================================================
---  5. EXAMS
+--  6. EXAMS
 -- =============================================================================
 CREATE TABLE EXAMS
 (
-    ID                         UUID           NOT NULL DEFAULT gen_random_uuid(),
+    ID                 BIGSERIAL    NOT NULL,
     TITLE                      VARCHAR(200)   NOT NULL,
-    TITLE_LOCAL VARCHAR(200) NOT NULL,
+    TITLE_LOCAL        VARCHAR(200) NOT NULL,
     DESCRIPTION                TEXT,
     EXAM_TYPE                  VARCHAR(20)    NOT NULL,
     EXAM_START_TIME            TIME           NOT NULL,
@@ -258,8 +257,8 @@ CREATE TABLE EXAMS
     IS_DELETED                 BOOLEAN        NOT NULL DEFAULT FALSE,
     CREATED_AT                 TIMESTAMP      NOT NULL DEFAULT NOW(),
     UPDATED_AT                 TIMESTAMP,
-    CREATED_BY_USER_ID         UUID,
-    UPDATED_BY_USER_ID         UUID,
+    CREATED_BY_USER_ID BIGINT,
+    UPDATED_BY_USER_ID BIGINT,
 
     CONSTRAINT PK_EXAMS PRIMARY KEY (ID),
     CONSTRAINT FK_EXAMS_AUDIT_CREATED
@@ -280,12 +279,12 @@ CREATE INDEX IDX_EXAMS_START_TIME ON EXAMS (EXAM_START_TIME);
 
 
 -- =============================================================================
---  5.1 EXAM_CONDUCTORS (Many-to-Many join table)
+--  6.1 EXAM_CONDUCTORS (Many-to-Many join table)
 -- =============================================================================
 CREATE TABLE EXAM_CONDUCTORS
 (
-    EXAM_ID UUID NOT NULL,
-    USER_ID UUID NOT NULL,
+    EXAM_ID BIGINT NOT NULL,
+    USER_ID BIGINT NOT NULL,
 
     CONSTRAINT PK_EXAM_CONDUCTORS PRIMARY KEY (EXAM_ID, USER_ID),
     CONSTRAINT FK_EXAM_CONDUCTORS_EXAM FOREIGN KEY (EXAM_ID) REFERENCES EXAMS (ID),
@@ -297,12 +296,12 @@ CREATE INDEX IDX_EXAM_CONDUCTORS_USER_ID ON EXAM_CONDUCTORS (USER_ID);
 
 
 -- =============================================================================
---  6. BATCH_EXAMS  (Many-to-Many join table — no audit columns)
+--  7. BATCH_EXAMS (Many-to-Many join table)
 -- =============================================================================
 CREATE TABLE BATCH_EXAMS
 (
-    BATCH_ID UUID NOT NULL,
-    EXAM_ID  UUID NOT NULL,
+    BATCH_ID BIGINT NOT NULL,
+    EXAM_ID  BIGINT NOT NULL,
 
     CONSTRAINT PK_BATCH_EXAMS PRIMARY KEY (BATCH_ID, EXAM_ID),
     CONSTRAINT FK_BATCH_EXAMS_BATCH FOREIGN KEY (BATCH_ID) REFERENCES BATCHES (ID),
@@ -314,12 +313,12 @@ CREATE INDEX IDX_BATCH_EXAMS_EXAM_ID ON BATCH_EXAMS (EXAM_ID);
 
 
 -- =============================================================================
---  5.1 BATCH_INSTRUCTORS (Many-to-Many join table)
+--  7.1 BATCH_INSTRUCTORS (Many-to-Many join table)
 -- =============================================================================
 CREATE TABLE BATCH_INSTRUCTORS
 (
-    BATCH_ID UUID NOT NULL,
-    USER_ID  UUID NOT NULL,
+    BATCH_ID BIGINT NOT NULL,
+    USER_ID  BIGINT NOT NULL,
 
     CONSTRAINT PK_BATCH_INSTRUCTORS PRIMARY KEY (BATCH_ID, USER_ID),
     CONSTRAINT FK_BATCH_INSTRUCTORS_BATCH FOREIGN KEY (BATCH_ID) REFERENCES BATCHES (ID),
@@ -331,12 +330,12 @@ CREATE INDEX IDX_BATCH_INSTRUCTORS_USER_ID ON BATCH_INSTRUCTORS (USER_ID);
 
 
 -- =============================================================================
---  7. QUESTIONS
+--  8. QUESTIONS
 -- =============================================================================
 CREATE TABLE QUESTIONS
 (
-    ID                 UUID        NOT NULL DEFAULT gen_random_uuid(),
-    EXAM_ID            UUID        NOT NULL,
+    ID      BIGSERIAL NOT NULL,
+    EXAM_ID BIGINT    NOT NULL,
     QUESTION_TEXT      TEXT        NOT NULL,
     QUESTION_TYPE      VARCHAR(20) NOT NULL,
     MARKS              INTEGER     NOT NULL DEFAULT 1,
@@ -348,8 +347,8 @@ CREATE TABLE QUESTIONS
     IS_DELETED         BOOLEAN     NOT NULL DEFAULT FALSE,
     CREATED_AT         TIMESTAMP   NOT NULL DEFAULT NOW(),
     UPDATED_AT         TIMESTAMP,
-    CREATED_BY_USER_ID UUID,
-    UPDATED_BY_USER_ID UUID,
+    CREATED_BY_USER_ID BIGINT,
+    UPDATED_BY_USER_ID BIGINT,
 
     CONSTRAINT PK_QUESTIONS PRIMARY KEY (ID),
     CONSTRAINT FK_QUESTIONS_EXAM FOREIGN KEY (EXAM_ID) REFERENCES EXAMS (ID),
@@ -369,12 +368,12 @@ CREATE INDEX IDX_QUESTIONS_ORDER_NO ON QUESTIONS (ORDER_NO);
 
 
 -- =============================================================================
---  8. OPTIONS
+--  9. OPTIONS
 -- =============================================================================
 CREATE TABLE OPTIONS
 (
-    ID                 UUID      NOT NULL DEFAULT gen_random_uuid(),
-    QUESTION_ID        UUID      NOT NULL,
+    ID                 BIGSERIAL NOT NULL,
+    QUESTION_ID        BIGINT    NOT NULL,
     OPTION_TEXT        TEXT      NOT NULL,
     IS_CORRECT         BOOLEAN   NOT NULL DEFAULT FALSE,
     DISPLAY_ORDER      INTEGER   NOT NULL DEFAULT 0,
@@ -382,8 +381,8 @@ CREATE TABLE OPTIONS
     IS_DELETED         BOOLEAN   NOT NULL DEFAULT FALSE,
     CREATED_AT         TIMESTAMP NOT NULL DEFAULT NOW(),
     UPDATED_AT         TIMESTAMP,
-    CREATED_BY_USER_ID UUID,
-    UPDATED_BY_USER_ID UUID,
+    CREATED_BY_USER_ID BIGINT,
+    UPDATED_BY_USER_ID BIGINT,
 
     CONSTRAINT PK_OPTIONS PRIMARY KEY (ID),
     CONSTRAINT FK_OPTIONS_QUESTION FOREIGN KEY (QUESTION_ID) REFERENCES QUESTIONS (ID),
@@ -397,14 +396,14 @@ CREATE INDEX IDX_OPTIONS_QUESTION_ID ON OPTIONS (QUESTION_ID);
 
 
 -- =============================================================================
---  9. ENROLLMENTS
+--  10. ENROLLMENTS
 -- =============================================================================
 CREATE TABLE ENROLLMENTS
 (
-    ID                 UUID        NOT NULL DEFAULT gen_random_uuid(),
-    STUDENT_ID         UUID        NOT NULL,
-    EXAM_ID            UUID        NOT NULL,
-    BATCH_ID           UUID,
+    ID         BIGSERIAL NOT NULL,
+    STUDENT_ID BIGINT    NOT NULL,
+    EXAM_ID    BIGINT    NOT NULL,
+    BATCH_ID           BIGINT,
     STATUS             VARCHAR(25) NOT NULL DEFAULT 'PENDING_PAYMENT',
     ATTEMPTS_USED      INTEGER     NOT NULL DEFAULT 0,
     ENROLLED_AT        TIMESTAMP,
@@ -413,8 +412,8 @@ CREATE TABLE ENROLLMENTS
     IS_DELETED         BOOLEAN     NOT NULL DEFAULT FALSE,
     CREATED_AT         TIMESTAMP   NOT NULL DEFAULT NOW(),
     UPDATED_AT         TIMESTAMP,
-    CREATED_BY_USER_ID UUID,
-    UPDATED_BY_USER_ID UUID,
+    CREATED_BY_USER_ID BIGINT,
+    UPDATED_BY_USER_ID BIGINT,
 
     CONSTRAINT PK_ENROLLMENTS PRIMARY KEY (ID),
     CONSTRAINT UQ_ENROLLMENT_STUDENT_EXAM UNIQUE (STUDENT_ID, EXAM_ID),
@@ -438,12 +437,12 @@ CREATE INDEX IDX_ENROLLMENTS_STATUS ON ENROLLMENTS (STATUS);
 
 
 -- =============================================================================
---  10. PAYMENTS
+--  11. PAYMENTS
 -- =============================================================================
 CREATE TABLE PAYMENTS
 (
-    ID                 UUID           NOT NULL DEFAULT gen_random_uuid(),
-    ENROLLMENT_ID      UUID           NOT NULL,
+    ID            BIGSERIAL NOT NULL,
+    ENROLLMENT_ID BIGINT    NOT NULL,
     AMOUNT_DUE         NUMERIC(10, 2) NOT NULL,
     AMOUNT_PAID        NUMERIC(10, 2) NOT NULL DEFAULT 0.00,
     CURRENCY           VARCHAR(3)     NOT NULL DEFAULT 'USD',
@@ -452,8 +451,8 @@ CREATE TABLE PAYMENTS
     IS_DELETED         BOOLEAN        NOT NULL DEFAULT FALSE,
     CREATED_AT         TIMESTAMP      NOT NULL DEFAULT NOW(),
     UPDATED_AT         TIMESTAMP,
-    CREATED_BY_USER_ID UUID,
-    UPDATED_BY_USER_ID UUID,
+    CREATED_BY_USER_ID BIGINT,
+    UPDATED_BY_USER_ID BIGINT,
 
     CONSTRAINT PK_PAYMENTS PRIMARY KEY (ID),
     CONSTRAINT UQ_PAYMENTS_ENROLLMENT UNIQUE (ENROLLMENT_ID),
@@ -474,12 +473,12 @@ CREATE INDEX IDX_PAYMENTS_STATUS ON PAYMENTS (STATUS);
 
 
 -- =============================================================================
---  11. PAYMENT_TRANSACTIONS
+--  12. PAYMENT_TRANSACTIONS
 -- =============================================================================
 CREATE TABLE PAYMENT_TRANSACTIONS
 (
-    ID                       UUID           NOT NULL DEFAULT gen_random_uuid(),
-    PAYMENT_ID               UUID           NOT NULL,
+    ID                 BIGSERIAL NOT NULL,
+    PAYMENT_ID         BIGINT    NOT NULL,
     STRIPE_CHARGE_ID         VARCHAR(100),
     STRIPE_PAYMENT_INTENT_ID VARCHAR(100),
     STRIPE_REFUND_ID         VARCHAR(100),
@@ -494,8 +493,8 @@ CREATE TABLE PAYMENT_TRANSACTIONS
     IS_DELETED               BOOLEAN        NOT NULL DEFAULT FALSE,
     CREATED_AT               TIMESTAMP      NOT NULL DEFAULT NOW(),
     UPDATED_AT               TIMESTAMP,
-    CREATED_BY_USER_ID       UUID,
-    UPDATED_BY_USER_ID       UUID,
+    CREATED_BY_USER_ID BIGINT,
+    UPDATED_BY_USER_ID BIGINT,
 
     CONSTRAINT PK_PAYMENT_TRANSACTIONS PRIMARY KEY (ID),
     CONSTRAINT FK_PAY_TXN_PAYMENT FOREIGN KEY (PAYMENT_ID) REFERENCES PAYMENTS (ID),
@@ -517,13 +516,13 @@ CREATE INDEX IDX_PAY_TXN_TRANSACTED_AT ON PAYMENT_TRANSACTIONS (TRANSACTED_AT);
 
 
 -- =============================================================================
---  12. EXAM_ATTEMPTS
+--  13. EXAM_ATTEMPTS
 -- =============================================================================
 CREATE TABLE EXAM_ATTEMPTS
 (
-    ID                 UUID      NOT NULL DEFAULT gen_random_uuid(),
-    ENROLLMENT_ID      UUID      NOT NULL,
-    EXAM_ID            UUID      NOT NULL,
+    ID                 BIGSERIAL NOT NULL,
+    ENROLLMENT_ID      BIGINT    NOT NULL,
+    EXAM_ID            BIGINT    NOT NULL,
     ATTEMPT_NUMBER     INTEGER   NOT NULL,
     STARTED_AT         TIMESTAMP NOT NULL,
     SUBMITTED_AT       TIMESTAMP,
@@ -538,8 +537,8 @@ CREATE TABLE EXAM_ATTEMPTS
     IS_DELETED         BOOLEAN   NOT NULL DEFAULT FALSE,
     CREATED_AT         TIMESTAMP NOT NULL DEFAULT NOW(),
     UPDATED_AT         TIMESTAMP,
-    CREATED_BY_USER_ID UUID,
-    UPDATED_BY_USER_ID UUID,
+    CREATED_BY_USER_ID BIGINT,
+    UPDATED_BY_USER_ID BIGINT,
 
     CONSTRAINT PK_EXAM_ATTEMPTS PRIMARY KEY (ID),
     CONSTRAINT FK_EXAM_ATTEMPTS_ENROLLMENT FOREIGN KEY (ENROLLMENT_ID) REFERENCES ENROLLMENTS (ID),
@@ -558,14 +557,14 @@ CREATE INDEX IDX_EXAM_ATTEMPTS_STARTED_AT ON EXAM_ATTEMPTS (STARTED_AT);
 
 
 -- =============================================================================
---  13. ANSWERS
+--  14. ANSWERS
 -- =============================================================================
 CREATE TABLE ANSWERS
 (
-    ID                 UUID      NOT NULL DEFAULT gen_random_uuid(),
-    ATTEMPT_ID         UUID      NOT NULL,
-    QUESTION_ID        UUID      NOT NULL,
-    SELECTED_OPTION_ID UUID,
+    ID                 BIGSERIAL NOT NULL,
+    ATTEMPT_ID         BIGINT    NOT NULL,
+    QUESTION_ID        BIGINT    NOT NULL,
+    SELECTED_OPTION_ID BIGINT,
     TEXT_ANSWER        TEXT,
     MARKS_AWARDED      INTEGER,
     IS_CORRECT         BOOLEAN,
@@ -574,8 +573,8 @@ CREATE TABLE ANSWERS
     IS_DELETED         BOOLEAN   NOT NULL DEFAULT FALSE,
     CREATED_AT         TIMESTAMP NOT NULL DEFAULT NOW(),
     UPDATED_AT         TIMESTAMP,
-    CREATED_BY_USER_ID UUID,
-    UPDATED_BY_USER_ID UUID,
+    CREATED_BY_USER_ID BIGINT,
+    UPDATED_BY_USER_ID BIGINT,
 
     CONSTRAINT PK_ANSWERS PRIMARY KEY (ID),
     CONSTRAINT UQ_ANSWERS_ATTEMPT_QUESTION UNIQUE (ATTEMPT_ID, QUESTION_ID),
@@ -594,13 +593,13 @@ CREATE INDEX IDX_ANSWERS_QUESTION_ID ON ANSWERS (QUESTION_ID);
 
 
 -- =============================================================================
---  14. SUBMISSION_FILES
+--  15. SUBMISSION_FILES
 -- =============================================================================
 CREATE TABLE SUBMISSION_FILES
 (
-    ID                 UUID         NOT NULL DEFAULT gen_random_uuid(),
-    ANSWER_ID          UUID         NOT NULL,
-    ATTEMPT_ID         UUID         NOT NULL,
+    ID         BIGSERIAL NOT NULL,
+    ANSWER_ID  BIGINT    NOT NULL,
+    ATTEMPT_ID BIGINT    NOT NULL,
     S3_OBJECT_KEY      VARCHAR(500) NOT NULL,
     FILE_URL           VARCHAR(500) NOT NULL,
     ORIGINAL_FILENAME  VARCHAR(255) NOT NULL,
@@ -613,8 +612,8 @@ CREATE TABLE SUBMISSION_FILES
     IS_DELETED         BOOLEAN      NOT NULL DEFAULT FALSE,
     CREATED_AT         TIMESTAMP    NOT NULL DEFAULT NOW(),
     UPDATED_AT         TIMESTAMP,
-    CREATED_BY_USER_ID UUID,
-    UPDATED_BY_USER_ID UUID,
+    CREATED_BY_USER_ID BIGINT,
+    UPDATED_BY_USER_ID BIGINT,
 
     CONSTRAINT PK_SUBMISSION_FILES PRIMARY KEY (ID),
     CONSTRAINT FK_SUB_FILES_ANSWER FOREIGN KEY (ANSWER_ID) REFERENCES ANSWERS (ID),

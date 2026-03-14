@@ -21,10 +21,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
- * Abstract base entity — UUID primary key + full Spring Data audit columns.
+ * Abstract base entity — Long primary key + full Spring Data audit columns.
  * All domain entities must extend this class.
  *
  * <p>{@code CREATED_BY_USER_ID} and {@code UPDATED_BY_USER_ID} hold a direct
@@ -55,9 +54,9 @@ import java.util.UUID;
 public abstract class BaseEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", updatable = false, nullable = false)
-    private UUID id;
+    private Long id;
 
     @CreatedDate
     @Column(name = "CREATED_AT", nullable = false, updatable = false)
