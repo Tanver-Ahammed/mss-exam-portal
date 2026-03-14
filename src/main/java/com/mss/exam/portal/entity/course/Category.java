@@ -1,6 +1,7 @@
 package com.mss.exam.portal.entity.course;
 
 import com.mss.exam.portal.entity.BaseEntity;
+import com.mss.exam.portal.entity.exam.Question;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
@@ -8,6 +9,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -23,9 +25,9 @@ import java.util.List;
 
 @Entity
 @Table(
-        name = "COURSE_CATEGORIES",
+        name = "CATEGORIES",
         indexes = {
-                @Index(name = "IDX_COURSE_CATEGORIES_NAME", columnList = "NAME")
+                @Index(name = "IDX_CATEGORIES_NAME", columnList = "NAME")
         }
 )
 @Getter
@@ -34,7 +36,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class CourseCategory extends BaseEntity {
+public class Category extends BaseEntity {
 
     @NotBlank
     @Size(max = 100)
@@ -57,6 +59,10 @@ public class CourseCategory extends BaseEntity {
     @Column(name = "IS_ACTIVE", nullable = false)
     @Builder.Default
     private boolean active = true;
+
+    @OneToMany(mappedBy = "category")
+    @Builder.Default
+    private List<Question> questions = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
