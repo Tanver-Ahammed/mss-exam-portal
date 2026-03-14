@@ -1,7 +1,7 @@
 package com.mss.exam.portal.entity.user;
 
 import com.mss.exam.portal.entity.BaseEntity;
-import com.mss.exam.portal.entity.course.Course;
+import com.mss.exam.portal.entity.course.Batch;
 import com.mss.exam.portal.entity.enrollment.Enrollment;
 import com.mss.exam.portal.entity.enums.Role;
 import com.mss.exam.portal.entity.exam.Exam;
@@ -68,11 +68,19 @@ public class User extends BaseEntity {
     @Column(name = "PASSWORD_HASH", nullable = false)
     private String passwordHash;
 
+    @NotBlank
     @Column(name = "FIRST_NAME", length = 80)
     private String firstName;
 
+    @NotBlank
+    @Column(name = "FIRST_NAME_LOCAL", length = 80)
+    private String firstNameLocal;
+
     @Column(name = "LAST_NAME", length = 80)
     private String lastName;
+
+    @Column(name = "LAST_NAME_LOCAL", length = 80)
+    private String lastNameLocal;
 
     @Column(name = "PHONE", length = 20)
     private String phone;
@@ -97,7 +105,7 @@ public class User extends BaseEntity {
 
     @ManyToMany(mappedBy = "instructedBy")
     @Builder.Default
-    private List<Course> instructedCourses = new ArrayList<>();
+    private List<Batch> instructedCourses = new ArrayList<>();
 
     @ManyToMany(mappedBy = "conductedBy")
     @Builder.Default

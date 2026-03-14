@@ -1,11 +1,10 @@
 package com.mss.exam.portal.entity.course;
 
 import com.mss.exam.portal.entity.BaseEntity;
-import com.mss.exam.portal.entity.user.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -52,6 +51,11 @@ public class Course extends BaseEntity {
     @Column(name = "TITLE", nullable = false, length = 200)
     private String title;
 
+    @NotBlank
+    @Size(max = 200)
+    @Column(name = "TITLE_LOCAL", nullable = false, length = 200)
+    private String titleLocal;
+
     /**
      * Short unique code, e.g. {@code JAVA-SPRING-01}.
      */
@@ -75,16 +79,22 @@ public class Course extends BaseEntity {
     @Builder.Default
     private boolean active = true;
 
-    // ── Relationships ─────────────────────────────────────────────────────────
-
     @ManyToMany
     @JoinTable(
-            name = "COURSE_INSTRUCTORS",
-            joinColumns = @JoinColumn(name = "COURSE_ID"),
-            inverseJoinColumns = @JoinColumn(name = "USER_ID")
+            name = "COURSE_CATEGORY_MAPPINGS",
+            joinColumns = @JoinColumn(
+                    name = "COURSE_ID",
+                    foreignKey = @ForeignKey(name = "FK_COURSE_CATEGORY_MAPPINGS_COURSE")
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "CATEGORY_ID",
+                    foreignKey = @ForeignKey(name = "FK_COURSE_CATEGORY_MAPPINGS_CATEGORY")
+            )
     )
     @Builder.Default
-    private List<User> instructedBy = new ArrayList<>();
+    private List<CourseCategory> categories = new ArrayList<>();
+
+    // ── Relationships ─────────────────────────────────────────────────────────
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
