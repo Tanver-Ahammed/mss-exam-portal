@@ -1,6 +1,7 @@
 package com.mss.exam.portal.entity.exam;
 
 import com.mss.exam.portal.entity.BaseEntity;
+import com.mss.exam.portal.entity.enrollment.Enrollment;
 import com.mss.exam.portal.entity.enrollment.ExamAttempt;
 import com.mss.exam.portal.entity.enums.ExamType;
 import com.mss.exam.portal.entity.user.User;
@@ -9,6 +10,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -154,8 +156,14 @@ public class Exam extends BaseEntity {
     @ManyToMany
     @JoinTable(
             name = "EXAM_CONDUCTORS",
-            joinColumns = @JoinColumn(name = "EXAM_ID"),
-            inverseJoinColumns = @JoinColumn(name = "USER_ID")
+            joinColumns = @JoinColumn(
+                    name = "EXAM_ID",
+                    foreignKey = @ForeignKey(name = "FK_EXAM_CONDUCTORS_EXAM")
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "USER_ID",
+                    foreignKey = @ForeignKey(name = "FK_EXAM_CONDUCTORS_USER")
+            )
     )
     @Builder.Default
     private List<User> conductedBy = new ArrayList<>();
@@ -167,7 +175,7 @@ public class Exam extends BaseEntity {
 
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<com.mss.exam.portal.entity.enrollment.Enrollment> enrollments = new ArrayList<>();
+    private List<Enrollment> enrollments = new ArrayList<>();
 
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

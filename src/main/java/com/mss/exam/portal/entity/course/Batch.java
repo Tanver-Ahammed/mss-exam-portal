@@ -122,8 +122,14 @@ public class Batch extends BaseEntity {
     @ManyToMany
     @JoinTable(
             name = "BATCH_INSTRUCTORS",
-            joinColumns = @JoinColumn(name = "BATCH_ID"),
-            inverseJoinColumns = @JoinColumn(name = "USER_ID")
+            joinColumns = @JoinColumn(
+                    name = "BATCH_ID",
+                    foreignKey = @ForeignKey(name = "FK_BATCH_INSTRUCTORS_BATCH")
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "USER_ID",
+                    foreignKey = @ForeignKey(name = "FK_BATCH_INSTRUCTORS_USER")
+            )
     )
     @Builder.Default
     private List<User> instructedBy = new ArrayList<>();

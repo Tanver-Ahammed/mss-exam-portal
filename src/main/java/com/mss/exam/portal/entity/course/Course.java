@@ -4,6 +4,7 @@ import com.mss.exam.portal.entity.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -81,8 +82,14 @@ public class Course extends BaseEntity {
     @ManyToMany
     @JoinTable(
             name = "COURSE_CATEGORY_MAPPINGS",
-            joinColumns = @JoinColumn(name = "COURSE_ID"),
-            inverseJoinColumns = @JoinColumn(name = "CATEGORY_ID")
+            joinColumns = @JoinColumn(
+                    name = "COURSE_ID",
+                    foreignKey = @ForeignKey(name = "FK_COURSE_CATEGORY_MAPPINGS_COURSE")
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "CATEGORY_ID",
+                    foreignKey = @ForeignKey(name = "FK_COURSE_CATEGORY_MAPPINGS_CATEGORY")
+            )
     )
     @Builder.Default
     private List<CourseCategory> categories = new ArrayList<>();
