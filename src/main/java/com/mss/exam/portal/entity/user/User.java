@@ -72,10 +72,10 @@ public class User extends BaseEntity {
     @Column(name = "FIRST_NAME", length = 80)
     private String firstName;
 
-    @NotBlank
     @Column(name = "FIRST_NAME_LOCAL", length = 80)
     private String firstNameLocal;
 
+    @NotBlank
     @Column(name = "LAST_NAME", length = 80)
     private String lastName;
 
