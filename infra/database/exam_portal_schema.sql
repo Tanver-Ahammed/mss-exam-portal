@@ -42,7 +42,7 @@ DROP TABLE IF EXISTS USERS CASCADE;
 -- =============================================================================
 CREATE TABLE USERS
 (
-    ID                 BIGSERIAL NOT NULL,
+    ID BIGSERIAL NOT NULL,
     USERNAME           VARCHAR(50)  NOT NULL,
     EMAIL              VARCHAR(120) NOT NULL,
     PASSWORD_HASH      VARCHAR(255) NOT NULL,
@@ -79,8 +79,8 @@ CREATE INDEX IDX_USERS_ROLE ON USERS (ROLE);
 -- =============================================================================
 CREATE TABLE USER_FILES
 (
-    ID                 BIGSERIAL NOT NULL,
-    USER_ID            BIGINT    NOT NULL,
+    ID      BIGSERIAL NOT NULL,
+    USER_ID BIGINT    NOT NULL,
     S3_OBJECT_KEY      VARCHAR(500) NOT NULL,
     FILE_URL           VARCHAR(500) NOT NULL,
     ORIGINAL_FILENAME  VARCHAR(255) NOT NULL,
@@ -147,9 +147,9 @@ CREATE INDEX IDX_COURSE_CATEGORIES_NAME ON COURSE_CATEGORIES (NAME);
 -- =============================================================================
 CREATE TABLE COURSES
 (
-    ID                 BIGSERIAL    NOT NULL,
+    ID          BIGSERIAL    NOT NULL,
     TITLE              VARCHAR(200)   NOT NULL,
-    TITLE_LOCAL        VARCHAR(200) NOT NULL,
+    TITLE_LOCAL VARCHAR(200) NOT NULL,
     CODE               VARCHAR(50)    NOT NULL,
     DESCRIPTION        TEXT,
     THUMBNAIL_URL      VARCHAR(500),
@@ -194,10 +194,10 @@ CREATE INDEX IDX_COURSE_CATEGORY_MAPPINGS_COURSE_ID ON COURSE_CATEGORY_MAPPINGS 
 -- =============================================================================
 CREATE TABLE BATCHES
 (
-    ID                 BIGSERIAL    NOT NULL,
-    COURSE_ID          BIGINT       NOT NULL,
+    ID         BIGSERIAL    NOT NULL,
+    COURSE_ID  BIGINT       NOT NULL,
     NAME               VARCHAR(150)  NOT NULL,
-    NAME_LOCAL         VARCHAR(150) NOT NULL,
+    NAME_LOCAL VARCHAR(150) NOT NULL,
     CSV_FILENAME       VARCHAR(255)  NOT NULL,
     S3_OBJECT_KEY      VARCHAR(500),
     TOTAL_ROWS         INTEGER       NOT NULL DEFAULT 0,
@@ -334,8 +334,8 @@ CREATE INDEX IDX_BATCH_INSTRUCTORS_USER_ID ON BATCH_INSTRUCTORS (USER_ID);
 -- =============================================================================
 CREATE TABLE QUESTIONS
 (
-    ID                 BIGSERIAL NOT NULL,
-    EXAM_ID            BIGINT    NOT NULL,
+    ID      BIGSERIAL NOT NULL,
+    EXAM_ID BIGINT    NOT NULL,
     QUESTION_TEXT      TEXT        NOT NULL,
     QUESTION_TYPE      VARCHAR(20) NOT NULL,
     MARKS              INTEGER     NOT NULL DEFAULT 1,
@@ -400,9 +400,9 @@ CREATE INDEX IDX_OPTIONS_QUESTION_ID ON OPTIONS (QUESTION_ID);
 -- =============================================================================
 CREATE TABLE ENROLLMENTS
 (
-    ID                 BIGSERIAL NOT NULL,
-    STUDENT_ID         BIGINT    NOT NULL,
-    EXAM_ID            BIGINT    NOT NULL,
+    ID         BIGSERIAL NOT NULL,
+    STUDENT_ID BIGINT    NOT NULL,
+    EXAM_ID    BIGINT    NOT NULL,
     BATCH_ID           BIGINT,
     STATUS             VARCHAR(25) NOT NULL DEFAULT 'PENDING_PAYMENT',
     ATTEMPTS_USED      INTEGER     NOT NULL DEFAULT 0,
@@ -441,8 +441,8 @@ CREATE INDEX IDX_ENROLLMENTS_STATUS ON ENROLLMENTS (STATUS);
 -- =============================================================================
 CREATE TABLE PAYMENTS
 (
-    ID                 BIGSERIAL NOT NULL,
-    ENROLLMENT_ID      BIGINT    NOT NULL,
+    ID            BIGSERIAL NOT NULL,
+    ENROLLMENT_ID BIGINT    NOT NULL,
     AMOUNT_DUE         NUMERIC(10, 2) NOT NULL,
     AMOUNT_PAID        NUMERIC(10, 2) NOT NULL DEFAULT 0.00,
     CURRENCY           VARCHAR(3)     NOT NULL DEFAULT 'USD',
@@ -597,9 +597,9 @@ CREATE INDEX IDX_ANSWERS_QUESTION_ID ON ANSWERS (QUESTION_ID);
 -- =============================================================================
 CREATE TABLE SUBMISSION_FILES
 (
-    ID                 BIGSERIAL NOT NULL,
-    ANSWER_ID          BIGINT    NOT NULL,
-    ATTEMPT_ID         BIGINT    NOT NULL,
+    ID         BIGSERIAL NOT NULL,
+    ANSWER_ID  BIGINT    NOT NULL,
+    ATTEMPT_ID BIGINT    NOT NULL,
     S3_OBJECT_KEY      VARCHAR(500) NOT NULL,
     FILE_URL           VARCHAR(500) NOT NULL,
     ORIGINAL_FILENAME  VARCHAR(255) NOT NULL,
