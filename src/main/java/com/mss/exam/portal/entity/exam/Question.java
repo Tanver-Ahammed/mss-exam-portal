@@ -1,6 +1,7 @@
 package com.mss.exam.portal.entity.exam;
 
 import com.mss.exam.portal.entity.BaseEntity;
+import com.mss.exam.portal.entity.course.Category;
 import com.mss.exam.portal.entity.enums.QuestionType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -11,6 +12,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
@@ -85,6 +88,20 @@ public class Question extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
+            name = "CATEGORY_ID",
+            foreignKey = @ForeignKey(name = "FK_QUESTIONS_CATEGORY")
+    )
+    private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "SUBJECT_ID",
+            foreignKey = @ForeignKey(name = "FK_QUESTIONS_SUBJECT")
+    )
+    private Subject subject;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
             name = "EXAM_ID",
             nullable = false,
             foreignKey = @ForeignKey(name = "FK_QUESTIONS_EXAM")
@@ -99,4 +116,19 @@ public class Question extends BaseEntity {
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Answer> answers = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "QUESTION_TAG_MAPPINGS",
+            joinColumns = @JoinColumn(
+                    name = "QUESTION_ID",
+                    foreignKey = @ForeignKey(name = "FK_QUESTION_TAG_MAPPINGS_QUESTION")
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "TAG_ID",
+                    foreignKey = @ForeignKey(name = "FK_QUESTION_TAG_MAPPINGS_TAG")
+            )
+    )
+    @Builder.Default
+    private List<QuestionTag> tags = new ArrayList<>();
 }

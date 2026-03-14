@@ -92,7 +92,7 @@ public class Course extends BaseEntity {
             )
     )
     @Builder.Default
-    private List<CourseCategory> categories = new ArrayList<>();
+    private List<Category> categories = new ArrayList<>();
 
     // ── Relationships ─────────────────────────────────────────────────────────
 
