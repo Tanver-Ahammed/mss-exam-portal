@@ -5,7 +5,6 @@ import com.mss.exam.portal.entity.user.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -74,6 +73,15 @@ public class Course extends BaseEntity {
     @Column(name = "IS_ACTIVE", nullable = false)
     @Builder.Default
     private boolean active = true;
+
+    @ManyToMany
+    @JoinTable(
+            name = "COURSE_CATEGORY_MAPPINGS",
+            joinColumns = @JoinColumn(name = "COURSE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "CATEGORY_ID")
+    )
+    @Builder.Default
+    private List<CourseCategory> categories = new ArrayList<>();
 
     // ── Relationships ─────────────────────────────────────────────────────────
 
