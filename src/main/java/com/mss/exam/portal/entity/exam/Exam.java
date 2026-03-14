@@ -1,9 +1,9 @@
 package com.mss.exam.portal.entity.exam;
 
 import com.mss.exam.portal.entity.BaseEntity;
+import com.mss.exam.portal.entity.enrollment.ExamAttempt;
 import com.mss.exam.portal.entity.enums.ExamType;
 import com.mss.exam.portal.entity.user.User;
-import com.mss.exam.portal.entity.enrollment.ExamAttempt;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -67,6 +67,11 @@ public class Exam extends BaseEntity {
     @Size(max = 200)
     @Column(name = "TITLE", nullable = false, length = 200)
     private String title;
+
+    @NotBlank
+    @Size(max = 200)
+    @Column(name = "TITLE_LOCAL", nullable = false, length = 200)
+    private String titleLocal;
 
     @Column(name = "DESCRIPTION", columnDefinition = "TEXT")
     private String description;

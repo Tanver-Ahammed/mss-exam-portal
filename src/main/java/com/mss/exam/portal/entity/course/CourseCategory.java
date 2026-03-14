@@ -40,6 +40,11 @@ public class CourseCategory extends BaseEntity {
     @Column(name = "NAME", nullable = false, unique = true, length = 100)
     private String name;
 
+    @NotBlank
+    @Size(max = 100)
+    @Column(name = "NAME_LOCAL", nullable = false, unique = true, length = 100)
+    private String nameLocal;
+
     @Size(max = 500)
     @Column(name = "DESCRIPTION", length = 500)
     private String description;

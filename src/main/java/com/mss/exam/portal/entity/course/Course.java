@@ -1,7 +1,6 @@
 package com.mss.exam.portal.entity.course;
 
 import com.mss.exam.portal.entity.BaseEntity;
-import com.mss.exam.portal.entity.user.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,6 +50,11 @@ public class Course extends BaseEntity {
     @Column(name = "TITLE", nullable = false, length = 200)
     private String title;
 
+    @NotBlank
+    @Size(max = 200)
+    @Column(name = "TITLE_LOCAL", nullable = false, length = 200)
+    private String titleLocal;
+
     /**
      * Short unique code, e.g. {@code JAVA-SPRING-01}.
      */
@@ -84,15 +88,6 @@ public class Course extends BaseEntity {
     private List<CourseCategory> categories = new ArrayList<>();
 
     // ── Relationships ─────────────────────────────────────────────────────────
-
-    @ManyToMany
-    @JoinTable(
-            name = "COURSE_INSTRUCTORS",
-            joinColumns = @JoinColumn(name = "COURSE_ID"),
-            inverseJoinColumns = @JoinColumn(name = "USER_ID")
-    )
-    @Builder.Default
-    private List<User> instructedBy = new ArrayList<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

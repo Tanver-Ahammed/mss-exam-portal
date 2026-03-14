@@ -1,9 +1,10 @@
 package com.mss.exam.portal.entity.course;
 
 import com.mss.exam.portal.entity.BaseEntity;
+import com.mss.exam.portal.entity.enrollment.Enrollment;
 import com.mss.exam.portal.entity.enums.BatchStatus;
 import com.mss.exam.portal.entity.exam.Exam;
-import com.mss.exam.portal.entity.enrollment.Enrollment;
+import com.mss.exam.portal.entity.user.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -62,6 +63,10 @@ public class Batch extends BaseEntity {
     @Column(name = "NAME", nullable = false, length = 150)
     private String name;
 
+    @NotBlank
+    @Column(name = "NAME_LOCAL", nullable = false, length = 150)
+    private String nameLocal;
+
     @Column(name = "CSV_FILENAME", nullable = false)
     private String csvFilename;
 
@@ -113,6 +118,15 @@ public class Batch extends BaseEntity {
             foreignKey = @ForeignKey(name = "FK_BATCHES_COURSE")
     )
     private Course course;
+
+    @ManyToMany
+    @JoinTable(
+            name = "BATCH_INSTRUCTORS",
+            joinColumns = @JoinColumn(name = "BATCH_ID"),
+            inverseJoinColumns = @JoinColumn(name = "USER_ID")
+    )
+    @Builder.Default
+    private List<User> instructedBy = new ArrayList<>();
 
     /**
      * The exams students in this batch are enrolled into.
