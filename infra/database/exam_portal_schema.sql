@@ -42,13 +42,13 @@ DROP TABLE IF EXISTS USERS CASCADE;
 -- =============================================================================
 CREATE TABLE USERS
 (
-    ID BIGSERIAL NOT NULL,
+    ID         BIGSERIAL   NOT NULL,
     USERNAME           VARCHAR(50)  NOT NULL,
     EMAIL              VARCHAR(120) NOT NULL,
     PASSWORD_HASH      VARCHAR(255) NOT NULL,
-    FIRST_NAME         VARCHAR(80),
-    LAST_NAME          VARCHAR(80),
+    FIRST_NAME VARCHAR(80) NOT NULL,
     FIRST_NAME_LOCAL   VARCHAR(80),
+    LAST_NAME  VARCHAR(80) NOT NULL,
     LAST_NAME_LOCAL    VARCHAR(80),
     PHONE              VARCHAR(20),
     ROLE               VARCHAR(30)  NOT NULL,
