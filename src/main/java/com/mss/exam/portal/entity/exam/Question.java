@@ -84,6 +84,9 @@ public class Question extends BaseEntity {
     @Builder.Default
     private boolean mandatory = true;
 
+    @Column(name = "QUESTION_YEAR")
+    private Integer questionYear;
+
     // ── Relationships ─────────────────────────────────────────────────────────
 
     @ManyToOne(fetch = FetchType.LAZY)
