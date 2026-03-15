@@ -8,6 +8,7 @@ public final class Routes {
     public static final String HOME = "/";
     public static final String USER = "/user";
     public static final String CATEGORY = "/category";
+    public static final String COURSE = "/course";
     public static final String BATCH = "/batch";
     public static final String SUBJECT = "/subject";
     public static final String QUESTION_TAG = "/question-tag";

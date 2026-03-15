@@ -6,37 +6,100 @@
     <title th:replace="${title}">MSS Exam Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* ── Sidebar toggle (CSS-only mobile) ── */
         #sidebar-toggle:checked ~ #sidebar {
             transform: translateX(0);
         }
-
         #sidebar-toggle:checked ~ #sidebar-backdrop {
             display: block;
         }
 
-        .group:hover .group-hover\:text-gray-900 {
-            color: #111827;
+        /* ── Sidebar link active state ── */
+        .sidebar-link.active {
+            background: #4f46e5;
+            color: #ffffff !important;
+        }
+
+        .sidebar-link.active svg {
+            color: #ffffff !important;
+        }
+
+        .sidebar-link.active:hover {
+            background: #4338ca;
+        }
+
+        /* ── Sidebar transition ── */
+        #sidebar {
+            transition: transform 0.25s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        /* ── Language / avatar dropdowns ── */
+        .lang-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 6px);
+            min-width: 130px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .10);
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .lang-wrapper:hover .lang-dropdown,
+        .lang-wrapper:focus-within .lang-dropdown {
+            display: block;
+        }
+
+        /* ── Sidebar scrollbar ── */
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
+
 <input type="checkbox" id="sidebar-toggle" class="hidden"/>
 
-<!-- Navbar -->
+<!-- Navbar (h-14 = 3.5rem) -->
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<!-- Sidebar Backdrop -->
-<label for="sidebar-toggle" id="sidebar-backdrop"
-       class="fixed inset-0 bg-gray-600 bg-opacity-50 z-30 lg:hidden hidden cursor-pointer"></label>
+<!-- Sidebar backdrop (mobile) -->
+<label for="sidebar-toggle"
+       id="sidebar-backdrop"
+       class="fixed inset-0 bg-gray-900/40 backdrop-blur-[1px] z-30 lg:hidden hidden cursor-pointer"></label>
 
-<!-- Sidebar -->
+<!-- Sidebar (top-14 matches navbar height) -->
 <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<!-- Main Content -->
-<div class="lg:ml-64 pt-16">
-    <div class="p-4 sm:p-6 lg:p-8">
+<!-- Main content: offset for sidebar (w-56) and navbar (h-14) -->
+<div class="lg:ml-56 pt-14">
+
+    <!-- Page header bar -->
+    <div class="sticky top-14 z-20 bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-2">
+        <button type="button"
+                class="p-1 rounded text-gray-400 hover:text-gray-600 lg:hidden">
+            <!-- desktop breadcrumb toggle (optional) -->
+        </button>
+        <h1 class="text-sm font-semibold text-gray-800" th:text="${pageTitle}">Dashboard Overview</h1>
+    </div>
+
+    <!-- Content area -->
+    <div class="p-6">
         <th:block th:replace="${content}"></th:block>
     </div>
 </div>
+
 </body>
 </html>
