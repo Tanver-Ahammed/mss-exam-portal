@@ -5,25 +5,11 @@ import com.mss.exam.portal.entity.course.Batch;
 import com.mss.exam.portal.entity.enrollment.Enrollment;
 import com.mss.exam.portal.entity.enums.Role;
 import com.mss.exam.portal.entity.exam.Exam;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Index;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,18 +55,12 @@ public class User extends BaseEntity {
     private String passwordHash;
 
     @NotBlank
-    @Column(name = "FIRST_NAME", length = 80)
-    private String firstName;
-
-    @Column(name = "FIRST_NAME_LOCAL", length = 80)
-    private String firstNameLocal;
+    @Column(name = "NAME", length = 80)
+    private String name;
 
     @NotBlank
-    @Column(name = "LAST_NAME", length = 80)
-    private String lastName;
-
-    @Column(name = "LAST_NAME_LOCAL", length = 80)
-    private String lastNameLocal;
+    @Column(name = "NAME_LOCAL", length = 80)
+    private String nameLocal;
 
     @Column(name = "PHONE", length = 20)
     private String phone;
