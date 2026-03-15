@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Frontend (Node / Vite)
+src/main/frontend/node_modules/
+src/main/frontend/dist/
+src/main/frontend/.vite/
+src/main/resources/static/assets/
