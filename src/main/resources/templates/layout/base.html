@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="${title}">MSS Exam Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #sidebar-toggle:checked ~ #sidebar {
+            transform: translateX(0);
+        }
+
+        #sidebar-toggle:checked ~ #sidebar-backdrop {
+            display: block;
+        }
+
+        .group:hover .group-hover\:text-gray-900 {
+            color: #111827;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+<input type="checkbox" id="sidebar-toggle" class="hidden"/>
+
+<!-- Navbar -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- Sidebar Backdrop -->
+<label for="sidebar-toggle" id="sidebar-backdrop"
+       class="fixed inset-0 bg-gray-600 bg-opacity-50 z-30 lg:hidden hidden cursor-pointer"></label>
+
+<!-- Sidebar -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<!-- Main Content -->
+<div class="lg:ml-64 pt-16">
+    <div class="p-4 sm:p-6 lg:p-8">
+        <th:block th:replace="${content}"></th:block>
+    </div>
+</div>
+</body>
+</html>
