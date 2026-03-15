@@ -4,17 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:replace="${title}">MSS Exam Portal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="${viteCss}"/>
+
     <style>
-        /* ── Sidebar toggle (CSS-only mobile) ── */
+        /* Mobile sidebar toggle */
         #sidebar-toggle:checked ~ #sidebar {
             transform: translateX(0);
         }
+
         #sidebar-toggle:checked ~ #sidebar-backdrop {
             display: block;
         }
 
-        /* ── Sidebar link active state ── */
+        #sidebar {
+            transition: transform 0.25s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        /* Sidebar active link */
         .sidebar-link.active {
             background: #4f46e5;
             color: #ffffff !important;
@@ -28,32 +34,7 @@
             background: #4338ca;
         }
 
-        /* ── Sidebar transition ── */
-        #sidebar {
-            transition: transform 0.25s cubic-bezier(.4, 0, .2, 1);
-        }
-
-        /* ── Language / avatar dropdowns ── */
-        .lang-dropdown {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: calc(100% + 6px);
-            min-width: 130px;
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, .10);
-            z-index: 9999;
-            overflow: hidden;
-        }
-
-        .lang-wrapper:hover .lang-dropdown,
-        .lang-wrapper:focus-within .lang-dropdown {
-            display: block;
-        }
-
-        /* ── Sidebar scrollbar ── */
+        /* Sidebar scrollbar */
         .sidebar-scroll::-webkit-scrollbar {
             width: 4px;
         }
@@ -66,40 +47,68 @@
             background: #e5e7eb;
             border-radius: 4px;
         }
+
+        .nav-root {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .nav-dropdown {
+            z-index: 9999;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
 
 <input type="checkbox" id="sidebar-toggle" class="hidden"/>
 
-<!-- Navbar (h-14 = 3.5rem) -->
+<!-- Navbar -->
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <!-- Sidebar backdrop (mobile) -->
-<label for="sidebar-toggle"
-       id="sidebar-backdrop"
+<label for="sidebar-toggle" id="sidebar-backdrop"
        class="fixed inset-0 bg-gray-900/40 backdrop-blur-[1px] z-30 lg:hidden hidden cursor-pointer"></label>
 
-<!-- Sidebar (top-14 matches navbar height) -->
+<!-- Sidebar -->
 <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<!-- Main content: offset for sidebar (w-56) and navbar (h-14) -->
+<!-- Main content -->
 <div class="lg:ml-56 pt-14">
-
-    <!-- Page header bar -->
-    <div class="sticky top-14 z-20 bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-2">
-        <button type="button"
-                class="p-1 rounded text-gray-400 hover:text-gray-600 lg:hidden">
-            <!-- desktop breadcrumb toggle (optional) -->
-        </button>
+    <div class="sticky top-14 z-20 bg-white border-b border-gray-200 px-6 py-3">
         <h1 class="text-sm font-semibold text-gray-800" th:text="${pageTitle}">Dashboard Overview</h1>
     </div>
-
-    <!-- Content area -->
     <div class="p-6">
         <th:block th:replace="${content}"></th:block>
     </div>
 </div>
+
+<!-- jQuery first, then navbar toggle logic — order guaranteed here -->
+<script type="module" th:src="${viteJs}"></script>
+<script>
+    jQuery(document).ready(function ($) {
+
+        $('[data-toggle="langMenu"]').on('click', function (e) {
+            e.stopPropagation();
+            $('#avatarMenu').addClass('hidden');
+            $('#langMenu').toggleClass('hidden');
+        });
+
+        $('[data-toggle="avatarMenu"]').on('click', function (e) {
+            e.stopPropagation();
+            $('#langMenu').addClass('hidden');
+            $('#avatarMenu').toggleClass('hidden');
+        });
+
+        $('#langMenu, #avatarMenu').on('click', function (e) {
+            e.stopPropagation();
+        });
+
+        $(document).on('click', function () {
+            $('#langMenu').addClass('hidden');
+            $('#avatarMenu').addClass('hidden');
+        });
+
+    });
+</script>
 
 </body>
 </html>

@@ -8,6 +8,7 @@ export default defineConfig({
     ],
     build: {
         // Output directly into Spring Boot's static folder
+        manifest: true,
         outDir: resolve(__dirname, '../resources/static/assets'),
         emptyOutDir: true,
 

@@ -21,6 +21,9 @@ public class ViteManifestService {
         try {
             ClassPathResource resource = new ClassPathResource("static/assets/.vite/manifest.json");
 
+            System.out.println("[Vite] Manifest exists: " + resource.exists());
+            System.out.println("[Vite] Manifest path: " + resource.getURL());
+
             // ✅ Skip gracefully if manifest not found (dev mode / frontend not built yet)
             if (!resource.exists()) {
                 return;

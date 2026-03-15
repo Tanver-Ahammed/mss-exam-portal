@@ -10,7 +10,7 @@
             <li>
                 <a th:href="@{${@routes.HOME}}"
                    th:classappend="${activeMenu == 'home'} ? 'active' : ''"
-                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
                     <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                          stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -24,7 +24,7 @@
             <li>
                 <a th:href="@{${@routes.USER}}"
                    th:classappend="${activeMenu == 'user'} ? 'active' : ''"
-                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
                     <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                          stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -38,7 +38,7 @@
             <li>
                 <a th:href="@{${@routes.CATEGORY}}"
                    th:classappend="${activeMenu == 'category'} ? 'active' : ''"
-                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
                     <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                          stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -48,11 +48,11 @@
                 </a>
             </li>
 
-            <!-- Course (shown in screenshot) -->
+            <!-- Course -->
             <li>
                 <a th:href="@{${@routes.COURSE}}"
                    th:classappend="${activeMenu == 'course'} ? 'active' : ''"
-                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
                     <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                          stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -66,7 +66,7 @@
             <li>
                 <a th:href="@{${@routes.BATCH}}"
                    th:classappend="${activeMenu == 'batch'} ? 'active' : ''"
-                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
                     <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                          stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -80,7 +80,7 @@
             <li>
                 <a th:href="@{${@routes.SUBJECT}}"
                    th:classappend="${activeMenu == 'subject'} ? 'active' : ''"
-                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
                     <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                          stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -94,7 +94,7 @@
             <li>
                 <a th:href="@{${@routes.QUESTION_TAG}}"
                    th:classappend="${activeMenu == 'questionTag'} ? 'active' : ''"
-                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
                     <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                          stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -108,7 +108,7 @@
             <li>
                 <a th:href="@{${@routes.EXAM}}"
                    th:classappend="${activeMenu == 'exam'} ? 'active' : ''"
-                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
                     <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                          stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -122,7 +122,7 @@
             <li>
                 <a th:href="@{${@routes.QUESTION}}"
                    th:classappend="${activeMenu == 'question'} ? 'active' : ''"
-                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
                     <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                          stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -136,7 +136,7 @@
             <li>
                 <a th:href="@{${@routes.ENROLLMENT}}"
                    th:classappend="${activeMenu == 'enrollment'} ? 'active' : ''"
-                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
                     <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                          stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -150,7 +150,7 @@
             <li>
                 <a th:href="@{${@routes.EXAM_ATTEMPT}}"
                    th:classappend="${activeMenu == 'examAttempt'} ? 'active' : ''"
-                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                   class="sidebar-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
                     <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                          stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round"
