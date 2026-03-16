@@ -1,0 +1,19 @@
+@import 'datatables.net-dt/css/dataTables.dataTables.min.css';
+
+.dataTables_wrapper { @apply text-sm text-gray-700; }
+table.dataTable thead th { @apply bg-gray-50 font-semibold text-gray-900; }
+table.dataTable tbody tr:hover { @apply bg-sky-50; }
+.dataTables_filter input {
+  @apply rounded-lg border border-gray-300 px-3 py-1.5 text-sm
+         focus:outline-none focus:ring-2 focus:ring-sky-500;
+}
+.dataTables_length select {
+  @apply rounded-lg border border-gray-300 px-2 py-1.5 text-sm
+         focus:outline-none focus:ring-2 focus:ring-sky-500;
+}
+.dataTables_paginate .paginate_button {
+  @apply rounded px-3 py-1 text-sm text-gray-600 hover:bg-gray-100;
+}
+.dataTables_paginate .paginate_button.current {
+  @apply bg-sky-500 text-white hover:bg-sky-600;
+}

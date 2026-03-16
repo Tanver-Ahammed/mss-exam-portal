@@ -1,9 +1,0 @@
-/* ✅ Tailwind v4 — single import, no config file needed */
-@import "tailwindcss";
-
-/* Your custom styles below */
-@layer base {
-    body {
-        @apply bg-gray-50 text-gray-900;
-    }
-}

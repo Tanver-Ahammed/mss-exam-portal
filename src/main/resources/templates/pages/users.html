@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/base :: layout(~{::title}, ~{::styles}, ~{::main}, ~{::scripts})}">
+<head>
+  <title th:text="${pageTitle} + ' — MyApp'">Users — MyApp</title>
+
+  <!--
+    datatable.css — injected into <head> by base layout
+    Contains: DataTables base CSS + Tailwind overrides
+  -->
+  <th:block th:fragment="styles">
+    <link rel="stylesheet" th:href="@{/css/datatable.css}"/>
+  </th:block>
+</head>
+<body>
+
+  <main th:fragment="main">
+    <div class="card">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-900">Users</h2>
+        <button class="btn-primary">Add User</button>
+      </div>
+
+      <!--
+        data-datatable   → triggers DataTable init in datatable.js
+        data-page-length → optional, overrides default of 10
+      -->
+      <table data-datatable data-page-length="5" class="w-full text-sm">
+        <thead>
+          <tr>
+            <th class="text-left p-3">Name</th>
+            <th class="text-left p-3">Email</th>
+            <th class="text-left p-3">Role</th>
+            <th class="text-left p-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="user : ${users}" class="border-t border-gray-100">
+            <td class="p-3 font-medium text-gray-900" th:text="${user.name()}">Name</td>
+            <td class="p-3 text-gray-600"             th:text="${user.email()}">Email</td>
+            <td class="p-3">
+              <span th:text="${user.role()}"
+                    th:classappend="${user.role() == 'Admin'} ? 'bg-sky-100 text-sky-800' : 'bg-gray-100 text-gray-700'"
+                    class="rounded-full px-2.5 py-0.5 text-xs font-medium">
+                Role
+              </span>
+            </td>
+            <td class="p-3">
+              <a th:href="@{/profile}" class="text-sky-600 hover:underline text-xs">Edit</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!--
+    datatable.js — injected before </body> by base layout
+    jQuery 4 (window.$) already available from main.js
+  -->
+  <th:block th:fragment="scripts">
+    <script th:src="@{/js/datatable.js}" defer></script>
+  </th:block>
+
+</body>
+</html>

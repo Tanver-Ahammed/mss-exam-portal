@@ -33,7 +33,9 @@ build/
 .vscode/
 
 # Frontend (Node / Vite)
-src/main/frontend/node_modules/
-src/main/frontend/dist/
-src/main/frontend/.vite/
-src/main/resources/static/assets/
+frontend/node_modules/
+# Compiled assets — regenerated on every build, do not commit
+src/main/resources/static/js/
+src/main/resources/static/css/
+*.class
+.DS_Store

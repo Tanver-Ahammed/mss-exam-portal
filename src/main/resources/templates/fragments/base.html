@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  Base layout fragment.
+  Pages use: th:replace="~{fragments/base :: layout(~{::title}, ~{::styles}, ~{::main}, ~{::scripts})}"
+-->
+
+<th:block th:fragment="layout(title, styles, content, scripts)">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!--
+    Page title injected by each page via ~{::title}
+  -->
+  <th:block th:replace="${title}"/>
+
+  <!--
+    main.css — Tailwind base + global component classes
+    Compiled by Tailwind CLI → static/css/main.css — loaded on EVERY page
+  -->
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+
+  <!--
+    Page-specific CSS injected here via ~{::styles}
+    e.g. datatable.css, cropper.css
+  -->
+  <th:block th:replace="${styles}"/>
+</head>
+<body class="min-h-screen bg-gray-100 antialiased">
+
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-56 shrink-0 bg-gray-900 flex flex-col">
+      <div class="px-6 py-5 border-b border-gray-700">
+        <span class="text-white font-bold text-lg">MyApp</span>
+      </div>
+      <nav class="flex-1 px-3 py-4 space-y-1">
+        <a th:href="@{/}"
+           th:classappend="${pageTitle == 'Home'} ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'"
+           class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors">
+          Home
+        </a>
+        <a th:href="@{/users}"
+           th:classappend="${pageTitle == 'Users'} ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'"
+           class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors">
+          Users
+        </a>
+        <a th:href="@{/profile}"
+           th:classappend="${pageTitle == 'Profile'} ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'"
+           class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors">
+          Profile
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main area -->
+    <div class="flex-1 flex flex-col overflow-auto">
+
+      <!-- Top bar -->
+      <header class="bg-white shadow-sm px-6 py-4 flex items-center justify-between shrink-0">
+        <h1 class="text-lg font-semibold text-gray-900" th:text="${pageTitle}">Page</h1>
+        <span class="text-sm text-gray-500">Spring Boot 4 + Tailwind + jQuery 4</span>
+      </header>
+
+      <!-- Flash message (auto-dismissed by main.js) -->
+      <div class="flash-message hidden mx-6 mt-4 rounded-lg bg-green-50
+                  px-4 py-3 text-sm text-green-800 ring-1 ring-green-200">
+        Saved successfully.
+      </div>
+
+      <!-- Page content injected here via ~{::main} -->
+      <main class="flex-1 p-6">
+        <th:block th:replace="${content}"/>
+      </main>
+
+    </div>
+  </div>
+
+  <!--
+    main.js — jQuery 4 global — compiled by esbuild → static/js/main.js
+    Loaded on EVERY page.
+  -->
+  <script th:src="@{/js/main.js}" defer></script>
+
+  <!--
+    Page-specific JS injected here via ~{::scripts}
+    e.g. datatable.js, cropper.js
+  -->
+  <th:block th:replace="${scripts}"/>
+
+</body>
+</html>
+</th:block>
+
+</html>

@@ -1,0 +1,5 @@
+@import 'cropperjs/dist/cropper.min.css';
+
+.cropper-view-box { @apply rounded-lg; }
+.cropper-line { background-color: #0ea5e9; }
+.cropper-point { background-color: #0ea5e9; }

@@ -1,0 +1,36 @@
+{
+  "name": "spring-tailwind-frontend",
+  "private": true,
+  "scripts": {
+    "build": "npm run build:css && npm run build:js",
+
+    "build:css": "concurrently \"npm run build:css:main\" \"npm run build:css:datatable\" \"npm run build:css:cropper\"",
+    "build:css:main":      "tailwindcss -i ./styles/main.css      -o ../src/main/resources/static/css/main.css      --minify",
+    "build:css:datatable": "tailwindcss -i ./styles/datatable.css -o ../src/main/resources/static/css/datatable.css --minify",
+    "build:css:cropper":   "tailwindcss -i ./styles/cropper.css   -o ../src/main/resources/static/css/cropper.css   --minify",
+
+    "build:js": "esbuild src/main.js src/datatable.js src/cropper.js --bundle --minify --target=es2020 --outdir=../src/main/resources/static/js",
+
+    "dev": "concurrently \"npm run dev:css\" \"npm run dev:js\"",
+
+    "dev:css": "concurrently \"npm run dev:css:main\" \"npm run dev:css:datatable\" \"npm run dev:css:cropper\"",
+    "dev:css:main":      "tailwindcss -i ./styles/main.css      -o ../src/main/resources/static/css/main.css      --watch",
+    "dev:css:datatable": "tailwindcss -i ./styles/datatable.css -o ../src/main/resources/static/css/datatable.css --watch",
+    "dev:css:cropper":   "tailwindcss -i ./styles/cropper.css   -o ../src/main/resources/static/css/cropper.css   --watch",
+
+    "dev:js": "esbuild src/main.js src/datatable.js src/cropper.js --bundle --sourcemap --target=es2020 --outdir=../src/main/resources/static/js --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.13",
+    "concurrently": "^8.2.2",
+    "esbuild": "^0.21.3",
+    "tailwindcss": "^3.4.4"
+  },
+  "dependencies": {
+    "jquery": "^4.0.0",
+    "datatables.net": "^2.0.8",
+    "datatables.net-dt": "^2.0.8",
+    "cropperjs": "^1.6.2"
+  }
+}
