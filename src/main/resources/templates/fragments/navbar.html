@@ -33,6 +33,24 @@
 
         <div class="topbar-divider"></div>
 
+        <!-- Language Switch -->
+        <div class="lang-switch">
+            <button id="langBtn" class="lang-btn" type="button">
+                <i class="fa-solid fa-globe"></i>
+                <span th:text="${#locale.language == 'bn'} ? 'BN' : 'EN'">EN</span>
+            </button>
+            <div id="langPanel" class="lang-panel">
+                <a th:href="@{''(lang=en)}"
+                   class="lang-option" th:classappend="${#locale.language != 'bn'} ? 'active'">
+                    English (EN)
+                </a>
+                <a th:href="@{''(lang=bn)}"
+                   class="lang-option" th:classappend="${#locale.language == 'bn'} ? 'active'">
+                    Bengali (BN)
+                </a>
+            </div>
+        </div>
+
         <!-- User dropdown -->
         <div class="user-dropdown">
             <button id="userBtn" class="user-btn" type="button">
