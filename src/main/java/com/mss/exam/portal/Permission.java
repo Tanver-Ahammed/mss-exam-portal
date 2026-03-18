@@ -1,21 +1,19 @@
 package com.mss.exam.portal;
 
-import lombok.Getter;
+import java.util.List;
+import java.util.Map;
 
-@Getter
 public enum Permission {
 
-    // ── Core Pages ────────────────────────────────────────────────────────────
-    HOME(
+    DASHBOARD(
             "nav.home",
-            Routes.HOME,
+            Routes.DASHBOARD,
             true,
             1,
             "fa-solid fa-house",
             MenuSection.MAIN
     ),
 
-    // ── User Management ───────────────────────────────────────────────────────
     USER(
             "nav.user",
             Routes.USER,
@@ -33,7 +31,6 @@ public enum Permission {
             MenuSection.MANAGEMENT
     ),
 
-    // ── Academic Structure ────────────────────────────────────────────────────
     CATEGORY(
             "nav.category",
             Routes.CATEGORY,
@@ -67,7 +64,6 @@ public enum Permission {
             MenuSection.ACADEMICS
     ),
 
-    // ── Question Bank ─────────────────────────────────────────────────────────
     QUESTION_TAG(
             "nav.questionTag",
             Routes.QUESTION_TAG,
@@ -85,7 +81,6 @@ public enum Permission {
             MenuSection.QUESTIONS
     ),
 
-    // ── Exam Management ───────────────────────────────────────────────────────
     EXAM(
             "nav.exam",
             Routes.EXAM,
@@ -103,39 +98,12 @@ public enum Permission {
             MenuSection.EXAMS
     );
 
-    // ── Fields ────────────────────────────────────────────────────────────────
-
-    /**
-     * i18n message key for the menu label.
-     */
     private final String messageKey;
-
-    /**
-     * The URL this permission maps to.
-     */
     private final String url;
-
-    /**
-     * Whether this entry should appear in the side menu.
-     */
     private final boolean isInSideMenu;
-
-    /**
-     * Rendering order in the side menu (lower = higher).
-     */
     private final int viewOrder;
-
-    /**
-     * FontAwesome CSS class for the menu icon.
-     */
     private final String menuIconClass;
-
-    /**
-     * The section this permission belongs to in the side menu.
-     */
     private final MenuSection menuSection;
-
-    // ── Constructor ───────────────────────────────────────────────────────────
 
     Permission(String messageKey,
                String url,
@@ -151,13 +119,30 @@ public enum Permission {
         this.menuSection = menuSection;
     }
 
-    // ── Accessors ─────────────────────────────────────────────────────────────
+    public String getMessageKey() {
+        return messageKey;
+    }
 
-    // ── Static helpers ────────────────────────────────────────────────────────
+    public String getUrl() {
+        return url;
+    }
 
-    /**
-     * All side-menu items sorted by viewOrder.
-     */
+    public boolean isInSideMenu() {
+        return isInSideMenu;
+    }
+
+    public int getViewOrder() {
+        return viewOrder;
+    }
+
+    public String getMenuIconClass() {
+        return menuIconClass;
+    }
+
+    public MenuSection getMenuSection() {
+        return menuSection;
+    }
+
     public static java.util.List<Permission> sideMenuItems() {
         return java.util.Arrays.stream(values())
                 .filter(Permission::isInSideMenu)
@@ -165,16 +150,11 @@ public enum Permission {
                 .toList();
     }
 
-    /**
-     * Side-menu items grouped by MenuSection, preserving section and item order.
-     * LinkedHashMap keeps insertion order (section declaration order).
-     */
     public static java.util.Map<MenuSection, java.util.List<Permission>> sideMenuGrouped() {
-        return sideMenuItems().stream()
-                .collect(java.util.stream.Collectors.groupingBy(
-                        Permission::getMenuSection,
-                        java.util.LinkedHashMap::new,
-                        java.util.stream.Collectors.toList()
-                ));
+        Map<MenuSection, List<Permission>> map = new java.util.LinkedHashMap<>();
+        for (Permission p : sideMenuItems()) {
+            map.computeIfAbsent(p.getMenuSection(), k -> new java.util.ArrayList<>()).add(p);
+        }
+        return map;
     }
 }

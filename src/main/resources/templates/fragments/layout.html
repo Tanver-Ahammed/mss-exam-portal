@@ -3,12 +3,15 @@
 
 <!--/*
     MAIN LAYOUT FRAGMENT
-    Usage in any page template:
+    Usage:
 
         <html th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
-            <title>Page Title — Exam Portal</title>
+            <title>Page Title</title>
             <main>...page body...</main>
         </html>
+        
+    For page-specific scripts, include in main:
+        <th:block th:replace="~{::#page-scripts}"></th:block>
 */-->
 
 <th:block th:fragment="layout(title, content)">
@@ -20,30 +23,18 @@
 
         <title th:replace="${title}">Exam Portal</title>
 
-        <!-- Google Fonts: Sora -->
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
         <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-
-        <!-- FontAwesome Free CDN -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-
-        <!-- Tailwind (your existing build output) -->
         <link rel="stylesheet" th:href="@{/lib/css/tailwind.css}"/>
-
-        <!-- App shell styles -->
         <link rel="stylesheet" th:href="@{/css/layout.css}"/>
     </head>
 
     <body>
-
-    <!-- Topbar -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
-
-    <!-- Sidebar -->
     <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-    <!-- Main content -->
     <div id="mainWrapper" class="main-wrapper">
         <main class="page-content">
             <div th:replace="${content}"></div>
@@ -57,13 +48,9 @@
         </footer>
     </div>
 
-    </body>
-
-    <!-- jQuery (your existing file) -->
     <script th:src="@{/lib/js/jquery-4.js}"></script>
-    <!-- App shell script -->
     <script th:src="@{/js/layout.js}"></script>
-
+    </body>
     </html>
 </th:block>
 
