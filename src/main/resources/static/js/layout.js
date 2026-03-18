@@ -20,20 +20,17 @@ $(function () {
     const $backdrop = $('<div id="sidebarBackdrop" class="sidebar-backdrop"></div>');
     $('body').append($backdrop);
 
-    /* ── Toggle: topbar hamburger ───────────────────────────────── */
-    $('#topbarToggle').on('click', function () {
+    /* ── Toggle: sidebar ─────────────────────────────────────────── */
+    function toggleSidebar() {
         if (isMobile()) {
             $sidebar.toggleClass('mobile-open');
             $backdrop.toggleClass('active');
         } else {
             toggleCollapse();
         }
-    });
+    }
 
-    /* ── Toggle: sidebar bottom button ─────────────────────────── */
-    $('#collapseBtn').on('click', function () {
-        toggleCollapse();
-    });
+    $('#topbarToggle, #collapseBtn').on('click', toggleSidebar);
 
     function toggleCollapse() {
         $sidebar.toggleClass('collapsed');
