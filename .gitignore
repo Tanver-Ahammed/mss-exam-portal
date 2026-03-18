@@ -34,8 +34,7 @@ build/
 
 # Frontend (Node / Vite)
 frontend/node_modules/
+frontend/dist/
 # Compiled assets — regenerated on every build, do not commit
-src/main/resources/static/js/
-src/main/resources/static/css/
 *.class
 .DS_Store
