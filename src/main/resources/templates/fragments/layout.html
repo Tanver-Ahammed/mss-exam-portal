@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!--/*
+    MAIN LAYOUT FRAGMENT
+    Usage in any page template:
+
+        <html th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+            <title>Page Title — Exam Portal</title>
+            <main>...page body...</main>
+        </html>
+*/-->
+
+<th:block th:fragment="layout(title, content)">
+    <!DOCTYPE html>
+    <html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <title th:replace="${title}">Exam Portal</title>
+
+        <!-- Google Fonts: Sora -->
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+        <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+        <!-- FontAwesome Free CDN -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+        <!-- Tailwind (your existing build output) -->
+        <link rel="stylesheet" th:href="@{/css/tailwind.css}"/>
+
+        <!-- App shell styles -->
+        <link rel="stylesheet" th:href="@{/css/layout.css}"/>
+    </head>
+
+    <body>
+
+    <!-- Topbar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <!-- Main content -->
+    <div id="mainWrapper" class="main-wrapper">
+        <main class="page-content">
+            <div th:replace="${content}"></div>
+        </main>
+        <footer class="main-footer">
+            &copy;
+            <span th:text="${#temporals.year(#temporals.createNow())}">2025</span>
+            <span th:text="#{app.name}">Exam Portal</span>
+            &mdash;
+            <span th:text="#{app.footer.rights}">All rights reserved.</span>
+        </footer>
+    </div>
+
+    </body>
+
+    <!-- jQuery (your existing file) -->
+    <script th:src="@{/js/jquery.js}"></script>
+    <!-- App shell script -->
+    <script th:src="@{/js/layout.js}"></script>
+
+    </html>
+</th:block>
+
+</html>

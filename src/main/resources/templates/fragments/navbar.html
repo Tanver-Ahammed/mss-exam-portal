@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<nav th:fragment="navbar" class="topbar">
+
+    <!-- ── Left: toggle + brand ─────────────────────────────────── -->
+    <div class="topbar-brand">
+        <button id="topbarToggle" class="topbar-toggle" type="button" aria-label="Toggle sidebar">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <a th:href="@{/}" class="topbar-brand" style="gap:10px">
+            <div class="brand-logo">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <span class="brand-name" th:text="#{app.name}">Exam Portal</span>
+        </a>
+    </div>
+
+    <!-- ── Center: search ───────────────────────────────────────── -->
+    <div class="topbar-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Search…"/>
+    </div>
+
+    <!-- ── Right: actions + user ────────────────────────────────── -->
+    <div class="topbar-actions">
+
+        <!-- Notification bell -->
+        <button class="topbar-icon-btn" type="button" aria-label="Notifications">
+            <i class="fa-regular fa-bell"></i>
+            <span class="notif-badge"></span>
+        </button>
+
+        <div class="topbar-divider"></div>
+
+        <!-- User dropdown -->
+        <div class="user-dropdown">
+            <button id="userBtn" class="user-btn" type="button">
+                <div class="user-avatar">
+                    <span th:text="${loggedInUser != null}
+                                    ? ${#strings.substring(loggedInUser, 0, 1).toUpperCase()}
+                                    : 'A'">A</span>
+                </div>
+                <div class="user-info">
+                    <div class="user-name" th:text="${loggedInUser != null} ? ${loggedInUser} : 'Admin'">Admin</div>
+                    <div class="user-role">Administrator</div>
+                </div>
+                <i id="userChevron" class="fa-solid fa-chevron-down user-chevron"></i>
+            </button>
+
+            <!-- Dropdown panel -->
+            <div id="userPanel" class="dropdown-panel">
+                <div class="dp-header">
+                    <div class="dp-label" th:text="#{nav.signedInAs}">Signed in as</div>
+                    <div class="dp-val" th:text="${loggedInUser != null} ? ${loggedInUser} : 'Admin'">Admin</div>
+                </div>
+                <div style="padding: 4px 0">
+                    <div class="dp-item">
+                        <i class="fa-solid fa-user"></i>
+                        <span th:text="#{nav.profile}">Profile</span>
+                    </div>
+                    <div class="dp-item">
+                        <i class="fa-solid fa-gear"></i>
+                        <span th:text="#{nav.settings}">Settings</span>
+                    </div>
+                </div>
+                <div class="dp-divider"></div>
+                <div style="padding: 4px 0">
+                    <!-- Simple GET logout — no CSRF needed -->
+                    <a th:href="@{/logout}" class="dp-item logout"
+                       style="display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span th:text="#{nav.logout}">Sign Out</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</nav>
+
+</html>

@@ -1,0 +1,62 @@
+<!--/* Example page using the layout fragment
+     Controller must add to model:
+       - activeUrl  (e.g. request.requestURI)
+*/-->
+<html th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+
+<title th:fragment="title">Dashboard — Exam Portal</title>
+
+<main th:fragment="content">
+    <div class="max-w-5xl">
+
+        <!-- Page heading -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold tracking-tight" style="color: var(--text-primary)">
+                Dashboard
+            </h1>
+            <p class="mt-1 text-sm" style="color: var(--text-secondary)"
+               th:text="#{page.dashboard.subtitle}">
+                Welcome back. Here's what's happening today.
+            </p>
+        </div>
+
+        <!-- Stat cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+            <div class="stat-card rounded-xl p-5" style="
+                    background: var(--surface-raised);
+                    border: 1px solid var(--surface-border);">
+                <p class="text-xs font-semibold uppercase tracking-widest"
+                   style="color: var(--text-muted)">Total Users</p>
+                <p class="text-3xl font-bold mt-2" style="color: var(--accent-light)">—</p>
+            </div>
+
+            <div class="stat-card rounded-xl p-5" style="
+                    background: var(--surface-raised);
+                    border: 1px solid var(--surface-border);">
+                <p class="text-xs font-semibold uppercase tracking-widest"
+                   style="color: var(--text-muted)">Active Courses</p>
+                <p class="text-3xl font-bold mt-2" style="color: var(--accent-light)">—</p>
+            </div>
+
+            <div class="stat-card rounded-xl p-5" style="
+                    background: var(--surface-raised);
+                    border: 1px solid var(--surface-border);">
+                <p class="text-xs font-semibold uppercase tracking-widest"
+                   style="color: var(--text-muted)">Exams Today</p>
+                <p class="text-3xl font-bold mt-2" style="color: var(--accent-light)">—</p>
+            </div>
+
+            <div class="stat-card rounded-xl p-5" style="
+                    background: var(--surface-raised);
+                    border: 1px solid var(--surface-border);">
+                <p class="text-xs font-semibold uppercase tracking-widest"
+                   style="color: var(--text-muted)">Enrollments</p>
+                <p class="text-3xl font-bold mt-2" style="color: var(--accent-light)">—</p>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+</html>
