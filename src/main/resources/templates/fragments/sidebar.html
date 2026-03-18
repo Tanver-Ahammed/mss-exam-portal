@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<aside th:fragment="sidebar" id="sidebar" class="sidebar">
+
+    <nav class="sidebar-nav">
+        <th:block th:each="entry, eStatus : ${sideMenuGrouped}">
+
+            <!-- Divider between sections (not before first) -->
+            <div th:if="${!eStatus.first}" class="nav-divider"></div>
+
+            <!-- Section heading -->
+            <p class="nav-section-label" th:text="#{${entry.key.labelKey}}">Section</p>
+
+            <!-- Links -->
+            <a th:each="perm : ${entry.value}"
+               th:href="@{${perm.url}}"
+               th:classappend="${activeUrl != null
+                                and (
+                                  (perm.url == '/' and activeUrl == '/')
+                                  or
+                                  (perm.url != '/' and #strings.startsWith(activeUrl, perm.url))
+                                )} ? ' active' : ''"
+               th:attr="data-tip=#{${perm.messageKey}}"
+               class="nav-link">
+                <i th:class="${perm.menuIconClass} + ' nav-icon'"></i>
+                <span class="nav-label" th:text="#{${perm.messageKey}}">Item</span>
+            </a>
+
+        </th:block>
+    </nav>
+
+    <!-- Sidebar footer buttons -->
+    <div class="sidebar-footer">
+        <button id="themeBtn" class="sidebar-footer-btn" type="button">
+            <i id="themeIcon" class="fa-solid fa-moon nav-icon"></i>
+            <span class="footer-btn-label" th:text="#{nav.theme}">Theme</span>
+        </button>
+        <button id="collapseBtn" class="sidebar-footer-btn" type="button">
+            <i id="collapseIcon" class="fa-solid fa-angles-left nav-icon"></i>
+            <span class="footer-btn-label" th:text="#{nav.collapse}">Collapse</span>
+        </button>
+    </div>
+
+</aside>
+
+</html>
