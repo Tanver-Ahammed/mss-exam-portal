@@ -86,6 +86,29 @@ $(function () {
         }
     }
 
+    /* ── Theme toggle ────────────────────────────────────────────── */
+    const THEME_KEY = 'ep_theme';
+    const $themeIcon = $('#themeIcon');
+
+    function applyTheme(theme) {
+        if (theme === 'light') {
+            $('html').attr('data-theme', 'light');
+            $themeIcon.removeClass('fa-moon').addClass('fa-sun');
+        } else {
+            $('html').removeAttr('data-theme');
+            $themeIcon.removeClass('fa-sun').addClass('fa-moon');
+        }
+        localStorage.setItem(THEME_KEY, theme);
+    }
+
+    const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
+    applyTheme(savedTheme);
+
+    $('#themeBtn').on('click', function () {
+        const current = $('html').attr('data-theme') === 'light' ? 'light' : 'dark';
+        applyTheme(current === 'light' ? 'dark' : 'light');
+    });
+
     /* ── AJAX default headers ───────────────────────────────────── */
     $.ajaxSetup({contentType: 'application/json'});
 

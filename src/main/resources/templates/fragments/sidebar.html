@@ -30,11 +30,15 @@
         </th:block>
     </nav>
 
-    <!-- Collapse button -->
+    <!-- Sidebar footer buttons -->
     <div class="sidebar-footer">
-        <button id="collapseBtn" class="collapse-btn" type="button">
+        <button id="themeBtn" class="sidebar-footer-btn" type="button">
+            <i id="themeIcon" class="fa-solid fa-moon nav-icon"></i>
+            <span class="footer-btn-label" th:text="#{nav.theme}">Theme</span>
+        </button>
+        <button id="collapseBtn" class="sidebar-footer-btn" type="button">
             <i id="collapseIcon" class="fa-solid fa-angles-left nav-icon"></i>
-            <span class="collapse-btn-label" th:text="#{nav.collapse}">Collapse</span>
+            <span class="footer-btn-label" th:text="#{nav.collapse}">Collapse</span>
         </button>
     </div>
 
