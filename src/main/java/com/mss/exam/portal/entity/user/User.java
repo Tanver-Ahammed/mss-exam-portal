@@ -5,6 +5,9 @@ import com.mss.exam.portal.entity.course.Batch;
 import com.mss.exam.portal.entity.enums.Role;
 import com.mss.exam.portal.entity.enums.UserStatus;
 import com.mss.exam.portal.entity.exam.Exam;
+import com.mss.exam.portal.entity.geo.District;
+import com.mss.exam.portal.entity.geo.Division;
+import com.mss.exam.portal.entity.geo.Upazila;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -82,6 +85,27 @@ public class User {
     @NotBlank
     @Column(name = "PHONE", length = 20)
     private String phone;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "DIVISION_ID",
+            foreignKey = @ForeignKey(name = "FK_USERS_DIVISION")
+    )
+    private Division division;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "DISTRICT_ID",
+            foreignKey = @ForeignKey(name = "FK_USERS_DISTRICT")
+    )
+    private District district;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "UPAZILA_ID",
+            foreignKey = @ForeignKey(name = "FK_USERS_UPAZILA")
+    )
+    private Upazila upazila;
 
     @Email
     @Column(name = "EMAIL", nullable = false, length = 120)
