@@ -1,7 +1,9 @@
 <!--/* Pass 3 fragments: title, content, pageScripts */-->
 <html th:replace="~{fragments/layout :: layout(~{::title}, ~{::main}, ~{::#page-scripts})}">
 
-<title th:fragment="title" th:text="#{page.user.title} + ' — ' + #{app.name}">Users — Exam Portal</title>
+<head>
+    <title th:fragment="title" th:text="#{page.user.title} + ' — ' + #{app.name}">Users — Exam Portal</title>
+</head>
 
 <main th:fragment="content">
 
@@ -26,8 +28,12 @@
 <!-- ── Page-specific scripts ──────────────────────────────────────────────────
      Passed as 3rd argument to layout. Rendered at the bottom of <body>
      AFTER jQuery + DataTables + all global libs are loaded.
-─────────────────────────────────────────────────────────────────────────────── -->
+────────────────────────────────────────────────────────────────────────────── -->
 <th:block id="page-scripts">
+    <script th:inline="javascript">
+        lang = /*[[${lang}]]*/ 'en';
+        usersApi = /*[[${T(com.mss.exam.portal.Routes).API_USER}]]*/ '/api/user';
+    </script>
     <script th:src="@{/js/user/index.js}"></script>
 </th:block>
 

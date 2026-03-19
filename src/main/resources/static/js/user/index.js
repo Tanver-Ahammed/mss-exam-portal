@@ -78,7 +78,7 @@ $(function () {
     };
 
     // ── Initialize ────────────────────────────────────────────────
-    globalDataTableInitialization('usersTable', '/api/user', columns, {
+    globalDataTableInitialization('usersTable', usersApi, columns, {
         pageLength: 10,
         language,
         ordering: true,

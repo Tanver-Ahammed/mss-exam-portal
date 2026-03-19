@@ -5,6 +5,7 @@ import com.mss.exam.portal.dto.DataTablesResponse;
 import com.mss.exam.portal.dto.user.UserDto;
 import com.mss.exam.portal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -27,7 +28,7 @@ public class UserController {
 
     @GetMapping(Routes.USER)
     public String listUsers(Model model) {
-        model.addAttribute("pageTitle", "Users");
+        model.addAttribute("lang", LocaleContextHolder.getLocale().getLanguage());
         return "pages/user/index";
     }
 

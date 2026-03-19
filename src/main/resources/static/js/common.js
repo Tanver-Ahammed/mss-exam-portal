@@ -43,7 +43,7 @@ function globalDataTableInitialization(
     } = {}
 ) {
     // Bengali locale: convert pagination numbers to local script
-    const lengthMenuLabels = 'bn' === 'bn'
+    const lengthMenuLabels = lang === 'bn'
         ? [PAGE_LENGTHS, PAGE_LENGTHS.map(n => n.toLocaleString(BENGALI_LOCALE))]
         : [PAGE_LENGTHS, PAGE_LENGTHS];
 
