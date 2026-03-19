@@ -1,8 +1,13 @@
-<html th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<html th:replace="~{fragments/layout :: layout(~{::title}, ~{::main}, ~{::script})}">
 
 <title th:fragment="title" th:text="#{page.user.title} + ' — ' + #{app.name}">Users — Exam Portal</title>
 
 <main th:fragment="content">
+
+    <!-- ── Page-specific CSS (safe to keep in body — low risk for stylesheets) ── -->
+    <link rel="stylesheet" th:href="@{/css/user/index.css}"/>
+
+    <!-- ── Page content ──────────────────────────────────────────────────────── -->
     <div class="page-header">
         <div>
             <h1 class="page-title" th:text="#{page.user.title}">Users</h1>
@@ -17,26 +22,24 @@
     <div class="table-card">
         <table id="usersTable" class="display nowrap" style="width:100%">
             <thead>
-                <tr>
-                    <th th:text="#{page.user.table.id}">ID</th>
-                    <th th:text="#{page.user.table.name}">Name</th>
-                    <th th:text="#{page.user.table.username}">Username</th>
-                    <th th:text="#{page.user.table.email}">Email</th>
-                    <th th:text="#{page.user.table.phone}">Phone</th>
-                    <th th:text="#{page.user.table.role}">Role</th>
-                    <th th:text="#{page.user.table.status}">Status</th>
-                    <th th:text="#{page.user.table.created}">Created</th>
-                    <th class="text-center" th:text="#{page.user.table.actions}">Actions</th>
-                </tr>
+            <tr>
+                <th th:text="#{page.user.table.id}">ID</th>
+                <th th:text="#{page.user.table.name}">Name</th>
+                <th th:text="#{page.user.table.username}">Username</th>
+                <th th:text="#{page.user.table.email}">Email</th>
+                <th th:text="#{page.user.table.phone}">Phone</th>
+                <th th:text="#{page.user.table.role}">Role</th>
+                <th th:text="#{page.user.table.status}">Status</th>
+                <th th:text="#{page.user.table.created}">Created</th>
+                <th class="text-center" th:text="#{page.user.table.actions}">Actions</th>
+            </tr>
             </thead>
             <tbody></tbody>
         </table>
     </div>
 
-    <link rel="stylesheet" th:href="@{/lib/css/datatable.css}"/>
-    <link rel="stylesheet" th:href="@{/css/user/index.css}"/>
-    <script th:src="@{/lib/js/datatable.js}"></script>
-    <script th:src="@{/js/user/index.js}"></script>
 </main>
+
+<script th:fragment="script" th:src="@{/js/user/index.js}"></script>
 
 </html>

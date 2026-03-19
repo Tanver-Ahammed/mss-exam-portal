@@ -108,7 +108,7 @@ public class Enrollment extends BaseEntity {
     )
     private Batch batch;
 
-    @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<ExamAttempt> attempts = new ArrayList<>();
 

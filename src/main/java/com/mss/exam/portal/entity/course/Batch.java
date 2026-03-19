@@ -119,7 +119,7 @@ public class Batch extends BaseEntity {
     )
     private Course course;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "BATCH_INSTRUCTORS",
             joinColumns = @JoinColumn(
@@ -138,7 +138,7 @@ public class Batch extends BaseEntity {
      * The exams students in this batch are enrolled into.
      * Join table: {@code BATCH_EXAMS (BATCH_ID, EXAM_ID)}.
      */
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "BATCH_EXAMS",
             joinColumns = @JoinColumn(name = "BATCH_ID",
@@ -149,7 +149,7 @@ public class Batch extends BaseEntity {
     @Builder.Default
     private List<Exam> exams = new ArrayList<>();
 
-    @OneToMany(mappedBy = "batch", cascade = CascadeType.ALL, orphanRemoval = false)
+    @OneToMany(mappedBy = "batch", cascade = CascadeType.ALL, orphanRemoval = false, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Enrollment> enrollments = new ArrayList<>();
 }

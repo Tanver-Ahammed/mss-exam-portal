@@ -3,6 +3,10 @@ package com.mss.exam.portal.service;
 import com.mss.exam.portal.entity.user.User;
 import com.mss.exam.portal.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +23,15 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
     public long count() {
         return userRepository.count();
+    }
+
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    public Page<User> findAllBySearch(String search, Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 }

@@ -4,6 +4,7 @@ import com.mss.exam.portal.entity.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
@@ -79,7 +80,7 @@ public class Course extends BaseEntity {
     @Builder.Default
     private boolean active = true;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "COURSE_CATEGORY_MAPPINGS",
             joinColumns = @JoinColumn(
@@ -96,7 +97,7 @@ public class Course extends BaseEntity {
 
     // ── Relationships ─────────────────────────────────────────────────────────
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Batch> batches = new ArrayList<>();
 }

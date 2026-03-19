@@ -6,9 +6,15 @@ $(function () {
     if (!$table.length) return;
 
     $table.DataTable({
+        processing: true,
+        serverSide: true,
         ajax: {
             url: '/api/user',
-            dataSrc: function (json) { return json.data; }
+            type: 'GET',
+            cache: false,
+            dataSrc: function (json) {
+                return json.data;
+            }
         },
         columns: [
             {data: 'id'},
@@ -17,23 +23,27 @@ $(function () {
             {data: 'email'},
             {data: 'phone'},
             {data: 'role'},
-            {data: 'active', render: function (d) {
-                return d
-                    ? '<span class="badge badge-success">Active</span>'
-                    : '<span class="badge badge-danger">Inactive</span>';
-            }},
+            {
+                data: 'active', render: function (d) {
+                    return d
+                        ? '<span class="badge badge-success">Active</span>'
+                        : '<span class="badge badge-danger">Inactive</span>';
+                }
+            },
             {data: 'createdAt'},
-            {data: 'id', className: 'text-center', render: function () {
-                return '<div class="action-buttons">' +
-                    '<button class="btn-icon" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>' +
-                    '<button class="btn-icon" title="Delete"><i class="fa-solid fa-trash"></i></button>' +
-                    '</div>';
-            }}
+            {
+                data: 'id', className: 'text-center', render: function () {
+                    return '<div class="action-buttons">' +
+                        '<button class="btn-icon" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                        '<button class="btn-icon" title="Delete"><i class="fa-solid fa-trash"></i></button>' +
+                        '</div>';
+                }
+            }
         ],
         dom: 'Bfrtip',
         buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
         pageLength: 10,
-        lengthMenu: [10, 25, 50, 100],
+        lengthMenu: [10, 20, 50, 100],
         responsive: true,
         language: {
             search: "",

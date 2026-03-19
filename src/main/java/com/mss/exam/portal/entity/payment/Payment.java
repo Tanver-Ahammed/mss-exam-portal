@@ -107,7 +107,7 @@ public class Payment extends BaseEntity {
      * All charge attempts, retries, and refunds for this payment.
      * Ordered by creation time — latest transaction reflects current state.
      */
-    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<PaymentTransaction> transactions = new ArrayList<>();
 }

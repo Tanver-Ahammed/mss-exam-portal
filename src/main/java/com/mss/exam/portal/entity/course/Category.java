@@ -4,6 +4,7 @@ import com.mss.exam.portal.entity.BaseEntity;
 import com.mss.exam.portal.entity.exam.Question;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
@@ -60,11 +61,11 @@ public class Category extends BaseEntity {
     @Builder.Default
     private boolean active = true;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Question> questions = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "COURSE_CATEGORY_MAPPINGS",
             joinColumns = @JoinColumn(

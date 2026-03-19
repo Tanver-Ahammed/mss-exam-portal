@@ -7,6 +7,7 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -50,7 +51,7 @@ public class QuestionTag extends BaseEntity {
     @Column(name = "COLOR", length = 7)
     private String color;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "QUESTION_TAG_MAPPINGS",
             joinColumns = @JoinColumn(

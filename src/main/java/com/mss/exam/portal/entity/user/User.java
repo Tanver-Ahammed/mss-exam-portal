@@ -1,5 +1,7 @@
 package com.mss.exam.portal.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mss.exam.portal.entity.BaseEntity;
 import com.mss.exam.portal.entity.course.Batch;
 import com.mss.exam.portal.entity.enrollment.Enrollment;
@@ -50,7 +52,7 @@ public class User extends BaseEntity {
     @Column(name = "EMAIL", nullable = false, length = 120)
     private String email;
 
-    @NotBlank
+    @JsonIgnore
     @Column(name = "PASSWORD_HASH", nullable = false)
     private String passwordHash;
 
@@ -73,21 +75,19 @@ public class User extends BaseEntity {
     @Builder.Default
     private boolean active = true;
 
-    // ── Relationships ─────────────────────────────────────────────────────────
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<UserFile> userFiles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Enrollment> enrollments = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "instructedBy")
+    @ManyToMany(mappedBy = "instructedBy", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Batch> instructedCourses = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "conductedBy")
+    @ManyToMany(mappedBy = "conductedBy", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Exam> conductedExams = new ArrayList<>();
 }

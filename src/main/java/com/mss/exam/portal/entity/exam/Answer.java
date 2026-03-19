@@ -123,7 +123,7 @@ public class Answer extends BaseEntity {
      * Empty list for MCQ and short-answer questions.
      * Ordered by {@code pageNumber ASC} in the service layer.
      */
-    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<SubmissionFile> submissionFiles = new ArrayList<>();
 }

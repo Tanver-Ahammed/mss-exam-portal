@@ -4,6 +4,7 @@ import com.mss.exam.portal.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -50,7 +51,7 @@ public class Subject extends BaseEntity {
     @Builder.Default
     private boolean active = true;
 
-    @OneToMany(mappedBy = "subject")
+    @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Question> questions = new ArrayList<>();
 }
