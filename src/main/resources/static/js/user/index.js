@@ -40,10 +40,10 @@ $(function () {
                 }
             }
         ],
-        dom: 'Bfrtip',
+        dom: 'Blfrtip',
         buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
         pageLength: 10,
-        lengthMenu: [10, 20, 50, 100],
+        lengthMenu: [10, 25, 50, 100],
         responsive: true,
         language: {
             search: "",
