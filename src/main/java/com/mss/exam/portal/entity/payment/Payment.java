@@ -1,21 +1,9 @@
 package com.mss.exam.portal.entity.payment;
 
-import com.mss.exam.portal.entity.BaseEntity;
 import com.mss.exam.portal.entity.enums.PaymentStatus;
 import com.mss.exam.portal.entity.enrollment.Enrollment;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import com.mss.exam.portal.entity.user.User;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -24,25 +12,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Aggregate payment record for one {@link Enrollment}.
- *
- * <p>A payment is the billing header — it holds the total amount due and the
- * overall status. The individual charge attempts (Stripe calls, retries,
- * partial payments, refunds) are each stored as a child
- * {@link PaymentTransaction}.
- *
- * <pre>
- *   Enrollment  1 ──── 1  Payment  1 ──── N  PaymentTransaction
- * </pre>
- *
- * <p>Table: {@code PAYMENTS}
- */
 @Entity
 @Table(
         name = "PAYMENTS",
@@ -59,19 +38,18 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(callSuper = true)
-public class Payment extends BaseEntity {
+@EqualsAndHashCode
+public class Payment {
 
-    /**
-     * Total amount due for this enrollment (copied from exam fee at enroll time).
-     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "PAYMENT_ID", updatable = false, nullable = false)
+    private Long paymentId;
+
     @DecimalMin("0.00")
     @Column(name = "AMOUNT_DUE", nullable = false, precision = 10, scale = 2)
     private BigDecimal amountDue;
 
-    /**
-     * Running total of all SUCCEEDED transaction amounts.
-     */
     @Column(name = "AMOUNT_PAID", nullable = false, precision = 10, scale = 2)
     @Builder.Default
     private BigDecimal amountPaid = BigDecimal.ZERO;
@@ -81,10 +59,6 @@ public class Payment extends BaseEntity {
     @Builder.Default
     private String currency = "USD";
 
-    /**
-     * Aggregate status derived from child transactions.
-     * Updated by {@code PaymentService} after every transaction event.
-     */
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS", nullable = false, length = 20)
     @Builder.Default
@@ -93,7 +67,33 @@ public class Payment extends BaseEntity {
     @Column(name = "NOTES", columnDefinition = "TEXT")
     private String notes;
 
-    // ── Relationships ─────────────────────────────────────────────────────────
+    @CreatedDate
+    @Column(name = "CREATED_AT", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "UPDATED_AT")
+    private LocalDateTime updatedAt;
+
+    @CreatedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "CREATED_BY_USER_ID",
+            updatable = false,
+            foreignKey = @ForeignKey(name = "FK_AUDIT_CREATED_BY_USER")
+    )
+    private User createdBy;
+
+    @LastModifiedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "UPDATED_BY_USER_ID",
+            foreignKey = @ForeignKey(name = "FK_AUDIT_UPDATED_BY_USER")
+    )
+    private User updatedBy;
+
+    @Column(name = "IS_DELETED", nullable = false)
+    private boolean deleted = false;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(
@@ -103,10 +103,6 @@ public class Payment extends BaseEntity {
     )
     private Enrollment enrollment;
 
-    /**
-     * All charge attempts, retries, and refunds for this payment.
-     * Ordered by creation time — latest transaction reflects current state.
-     */
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<PaymentTransaction> transactions = new ArrayList<>();

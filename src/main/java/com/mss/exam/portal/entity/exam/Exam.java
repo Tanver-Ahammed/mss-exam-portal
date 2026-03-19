@@ -1,24 +1,10 @@
 package com.mss.exam.portal.entity.exam;
 
-import com.mss.exam.portal.entity.BaseEntity;
 import com.mss.exam.portal.entity.enrollment.Enrollment;
 import com.mss.exam.portal.entity.enrollment.ExamAttempt;
 import com.mss.exam.portal.entity.enums.ExamType;
 import com.mss.exam.portal.entity.user.User;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -31,25 +17,17 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents a schedulable exam with a question bank.
- *
- * <h3>Time window semantics</h3>
- * <ul>
- *   <li>{@code EXAM_START_TIME} / {@code EXAM_END_TIME} — the daily clock window
- *       during which students may begin the exam (e.g. 18:00 – 22:00).</li>
- *   <li>{@code DURATION_MINUTES} — the maximum sitting time once a student
- *       starts (e.g. 60 min).  The attempt auto-submits when elapsed.</li>
- * </ul>
- *
- * <p>Table: {@code EXAMS}
- */
 @Entity
 @Table(
         name = "EXAMS",
@@ -63,8 +41,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(callSuper = true)
-public class Exam extends BaseEntity {
+@EqualsAndHashCode
+public class Exam {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "EXAM_ID", updatable = false, nullable = false)
+    private Long examId;
 
     @NotBlank
     @Size(max = 200)
@@ -84,35 +67,18 @@ public class Exam extends BaseEntity {
     @Column(name = "EXAM_TYPE", nullable = false, length = 20)
     private ExamType examType;
 
-    // ── Time window ───────────────────────────────────────────────────────────
-
-    /**
-     * Clock time when the exam window opens each day, e.g. {@code 18:00}.
-     * Combined with the batch/schedule date to form the full start timestamp.
-     */
     @NotNull
     @Column(name = "EXAM_START_TIME", nullable = false)
     private LocalTime examStartTime;
 
-    /**
-     * Clock time when the exam window closes, e.g. {@code 22:00}.
-     * Students cannot begin a new attempt after this time.
-     */
     @NotNull
     @Column(name = "EXAM_END_TIME", nullable = false)
     private LocalTime examEndTime;
 
-    /**
-     * Maximum sitting duration in minutes once an attempt is started.
-     * Must be ≤ the window length (endTime − startTime).
-     * The attempt auto-submits when this duration is exhausted.
-     */
     @Min(10)
     @Max(600)
     @Column(name = "DURATION_MINUTES", nullable = false)
     private Integer durationMinutes;
-
-    // ── Grading ───────────────────────────────────────────────────────────────
 
     @Min(0)
     @Max(100)
@@ -122,8 +88,6 @@ public class Exam extends BaseEntity {
     @Column(name = "TOTAL_MARKS", nullable = false)
     @Builder.Default
     private Integer totalMarks = 0;
-
-    // ── Attempt policy ────────────────────────────────────────────────────────
 
     @Min(1)
     @Column(name = "MAX_ATTEMPTS", nullable = false)
@@ -142,8 +106,6 @@ public class Exam extends BaseEntity {
     @Builder.Default
     private boolean showResultImmediately = true;
 
-    // ── Fees & certificates ───────────────────────────────────────────────────
-
     @DecimalMin("0.0")
     @Column(name = "ENROLLMENT_FEE", precision = 10, scale = 2)
     @Builder.Default
@@ -152,7 +114,33 @@ public class Exam extends BaseEntity {
     @Column(name = "CERTIFICATE_TEMPLATE_URL")
     private String certificateTemplateUrl;
 
-    // ── Relationships ─────────────────────────────────────────────────────────
+    @CreatedDate
+    @Column(name = "CREATED_AT", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "UPDATED_AT")
+    private LocalDateTime updatedAt;
+
+    @CreatedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "CREATED_BY_USER_ID",
+            updatable = false,
+            foreignKey = @ForeignKey(name = "FK_AUDIT_CREATED_BY_USER")
+    )
+    private User createdBy;
+
+    @LastModifiedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "UPDATED_BY_USER_ID",
+            foreignKey = @ForeignKey(name = "FK_AUDIT_UPDATED_BY_USER")
+    )
+    private User updatedBy;
+
+    @Column(name = "IS_DELETED", nullable = false)
+    private boolean deleted = false;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

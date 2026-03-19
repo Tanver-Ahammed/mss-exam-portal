@@ -1,17 +1,7 @@
 package com.mss.exam.portal.entity.course;
 
-import com.mss.exam.portal.entity.BaseEntity;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.mss.exam.portal.entity.user.User;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -21,17 +11,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents an academic / training course.
- * A course contains one or more {@link Batch}es.
- *
- * <p>Table: {@code COURSES}
- */
 @Entity
 @Table(
         name = "COURSES",
@@ -44,8 +33,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(callSuper = true)
-public class Course extends BaseEntity {
+@EqualsAndHashCode
+public class Course {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "COURSE_ID", updatable = false, nullable = false)
+    private Long courseId;
 
     @NotBlank
     @Size(max = 200)
@@ -57,9 +51,6 @@ public class Course extends BaseEntity {
     @Column(name = "TITLE_LOCAL", nullable = false, length = 200)
     private String titleLocal;
 
-    /**
-     * Short unique code, e.g. {@code JAVA-SPRING-01}.
-     */
     @NotBlank
     @Size(max = 50)
     @Column(name = "CODE", nullable = false, unique = true, length = 50)
@@ -80,6 +71,34 @@ public class Course extends BaseEntity {
     @Builder.Default
     private boolean active = true;
 
+    @CreatedDate
+    @Column(name = "CREATED_AT", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "UPDATED_AT")
+    private LocalDateTime updatedAt;
+
+    @CreatedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "CREATED_BY_USER_ID",
+            updatable = false,
+            foreignKey = @ForeignKey(name = "FK_AUDIT_CREATED_BY_USER")
+    )
+    private User createdBy;
+
+    @LastModifiedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "UPDATED_BY_USER_ID",
+            foreignKey = @ForeignKey(name = "FK_AUDIT_UPDATED_BY_USER")
+    )
+    private User updatedBy;
+
+    @Column(name = "IS_DELETED", nullable = false)
+    private boolean deleted = false;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "COURSE_CATEGORY_MAPPINGS",
@@ -94,8 +113,6 @@ public class Course extends BaseEntity {
     )
     @Builder.Default
     private List<Category> categories = new ArrayList<>();
-
-    // ── Relationships ─────────────────────────────────────────────────────────
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default

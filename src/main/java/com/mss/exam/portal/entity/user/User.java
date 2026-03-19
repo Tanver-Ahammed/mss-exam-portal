@@ -2,9 +2,7 @@ package com.mss.exam.portal.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.mss.exam.portal.entity.BaseEntity;
 import com.mss.exam.portal.entity.course.Batch;
-import com.mss.exam.portal.entity.enrollment.Enrollment;
 import com.mss.exam.portal.entity.enums.Role;
 import com.mss.exam.portal.entity.exam.Exam;
 import jakarta.persistence.*;
@@ -12,25 +10,26 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents a system user (admin, instructor, examiner, or student).
- * Loaded by Spring Security via {@code UserDetailsService}.
- *
- * <p>Table: {@code USERS}
- */
 @Entity
 @Table(
         name = "USERS",
         uniqueConstraints = {
                 @UniqueConstraint(name = "UQ_USERS_EMAIL", columnNames = "EMAIL"),
+                @UniqueConstraint(name = "UQ_USERS_PHONE", columnNames = "PHONE"),
                 @UniqueConstraint(name = "UQ_USERS_USERNAME", columnNames = "USERNAME")
         },
         indexes = {
                 @Index(name = "IDX_USERS_EMAIL", columnList = "EMAIL"),
+                @Index(name = "IDX_USERS_PHONE", columnList = "PHONE"),
                 @Index(name = "IDX_USERS_ROLE", columnList = "ROLE")
         }
 )
@@ -39,22 +38,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(callSuper = true)
-public class User extends BaseEntity {
+public class User {
 
-    @NotBlank
-    @Size(min = 3, max = 50)
-    @Column(name = "USERNAME", nullable = false, length = 50)
-    private String username;
-
-    @NotBlank
-    @Email
-    @Column(name = "EMAIL", nullable = false, length = 120)
-    private String email;
-
-    @JsonIgnore
-    @Column(name = "PASSWORD_HASH", nullable = false)
-    private String passwordHash;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "USER_ID", updatable = false, nullable = false)
+    private Long userId;
 
     @NotBlank
     @Column(name = "NAME", length = 80)
@@ -64,8 +53,22 @@ public class User extends BaseEntity {
     @Column(name = "NAME_LOCAL", length = 80)
     private String nameLocal;
 
+    @NotBlank
+    @Size(min = 3, max = 50)
+    @Column(name = "USERNAME", nullable = false, length = 50)
+    private String username;
+
+    @NotBlank
     @Column(name = "PHONE", length = 20)
     private String phone;
+
+    @Email
+    @Column(name = "EMAIL", nullable = false, length = 120)
+    private String email;
+
+    @JsonIgnore
+    @Column(name = "PASSWORD_HASH", nullable = false)
+    private String passwordHash;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "ROLE", nullable = false, length = 30)
@@ -75,13 +78,41 @@ public class User extends BaseEntity {
     @Builder.Default
     private boolean active = true;
 
+    @CreatedDate
+    @Column(name = "CREATED_AT", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "UPDATED_AT")
+    private LocalDateTime updatedAt;
+
+    @CreatedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "CREATED_BY_USER_ID",
+            updatable = false,
+            foreignKey = @ForeignKey(name = "FK_AUDIT_CREATED_BY_USER")
+    )
+    private User createdBy;
+
+    @LastModifiedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "UPDATED_BY_USER_ID",
+            foreignKey = @ForeignKey(name = "FK_AUDIT_UPDATED_BY_USER")
+    )
+    private User updatedBy;
+
+    @Column(name = "IS_DELETED", nullable = false)
+    private boolean deleted = false;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<UserFile> userFiles = new ArrayList<>();
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private List<Enrollment> enrollments = new ArrayList<>();
+    private List<com.mss.exam.portal.entity.enrollment.Enrollment> enrollments = new ArrayList<>();
 
     @ManyToMany(mappedBy = "instructedBy", fetch = FetchType.LAZY)
     @Builder.Default

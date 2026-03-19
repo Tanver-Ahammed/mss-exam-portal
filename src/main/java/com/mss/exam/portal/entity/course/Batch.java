@@ -1,7 +1,5 @@
 package com.mss.exam.portal.entity.course;
 
-import com.mss.exam.portal.entity.BaseEntity;
-import com.mss.exam.portal.entity.enrollment.Enrollment;
 import com.mss.exam.portal.entity.enums.BatchStatus;
 import com.mss.exam.portal.entity.exam.Exam;
 import com.mss.exam.portal.entity.user.User;
@@ -12,6 +10,9 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -28,21 +29,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents a cohort of students enrolled under a {@link Course}.
- *
- * <p>One batch can be linked to multiple {@link Exam}s so that a single
- * CSV upload enrolls the whole cohort into every exam in that batch.
- * One {@link Enrollment} row is created per (student × exam) pair.
- *
- * <p>Table:      {@code BATCHES}
- * <p>Join table: {@code BATCH_EXAMS}
- */
 @Entity
 @Table(
         name = "BATCHES",
@@ -56,8 +52,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(callSuper = true)
-public class Batch extends BaseEntity {
+@EqualsAndHashCode
+public class Batch {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "BATCH_ID", updatable = false, nullable = false)
+    private Long batchId;
 
     @NotBlank
     @Column(name = "NAME", nullable = false, length = 150)
@@ -72,10 +73,6 @@ public class Batch extends BaseEntity {
 
     @Column(name = "S3_OBJECT_KEY")
     private String s3ObjectKey;
-
-    @Column(name = "TOTAL_ROWS", nullable = false)
-    @Builder.Default
-    private Integer totalRows = 0;
 
     @Column(name = "ENROLLED_COUNT", nullable = false)
     @Builder.Default
@@ -100,17 +97,37 @@ public class Batch extends BaseEntity {
     @Builder.Default
     private BatchStatus status = BatchStatus.UPLOADED;
 
-    /**
-     * JSON array of per-row error messages for failed rows.
-     */
     @Column(name = "ERROR_LOG", columnDefinition = "TEXT")
     private String errorLog;
 
-    // ── Relationships ─────────────────────────────────────────────────────────
+    @CreatedDate
+    @Column(name = "CREATED_AT", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-    /**
-     * The course this batch belongs to.
-     */
+    @LastModifiedDate
+    @Column(name = "UPDATED_AT")
+    private LocalDateTime updatedAt;
+
+    @CreatedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "CREATED_BY_USER_ID",
+            updatable = false,
+            foreignKey = @ForeignKey(name = "FK_AUDIT_CREATED_BY_USER")
+    )
+    private User createdBy;
+
+    @LastModifiedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "UPDATED_BY_USER_ID",
+            foreignKey = @ForeignKey(name = "FK_AUDIT_UPDATED_BY_USER")
+    )
+    private User updatedBy;
+
+    @Column(name = "IS_DELETED", nullable = false)
+    private boolean deleted = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "COURSE_ID",
@@ -134,10 +151,6 @@ public class Batch extends BaseEntity {
     @Builder.Default
     private List<User> instructedBy = new ArrayList<>();
 
-    /**
-     * The exams students in this batch are enrolled into.
-     * Join table: {@code BATCH_EXAMS (BATCH_ID, EXAM_ID)}.
-     */
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "BATCH_EXAMS",
@@ -151,5 +164,5 @@ public class Batch extends BaseEntity {
 
     @OneToMany(mappedBy = "batch", cascade = CascadeType.ALL, orphanRemoval = false, fetch = FetchType.LAZY)
     @Builder.Default
-    private List<Enrollment> enrollments = new ArrayList<>();
+    private List<com.mss.exam.portal.entity.enrollment.Enrollment> enrollments = new ArrayList<>();
 }
