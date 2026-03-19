@@ -5,9 +5,6 @@
 
 <main th:fragment="content">
 
-    <!-- ── Page-specific CSS ─────────────────────────────────────────────────── -->
-    <link rel="stylesheet" th:href="@{/css/user/index.css}"/>
-
     <!-- ── Page content ──────────────────────────────────────────────────────── -->
     <div class="page-header">
         <div>
@@ -20,24 +17,8 @@
         </button>
     </div>
 
-    <div class="table-card">
-        <!-- 'nowrap' removed — allows columns to collapse on small screens -->
-        <table id="usersTable" class="display" style="width:100%">
-            <thead>
-            <tr>
-                <th th:text="#{page.user.table.id}">ID</th>
-                <th th:text="#{page.user.table.name}">Name</th>
-                <th th:text="#{page.user.table.username}">Username</th>
-                <th th:text="#{page.user.table.email}">Email</th>
-                <th th:text="#{page.user.table.phone}">Phone</th>
-                <th th:text="#{page.user.table.role}">Role</th>
-                <th th:text="#{page.user.table.status}">Status</th>
-                <th th:text="#{page.user.table.created}">Created</th>
-                <th class="text-center" th:text="#{page.user.table.actions}">Actions</th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+    <div class="table-responsive">
+        <table id="usersTable" class="table"></table>
     </div>
 
 </main>
