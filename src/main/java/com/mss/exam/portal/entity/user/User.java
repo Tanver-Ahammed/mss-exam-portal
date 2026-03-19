@@ -1,15 +1,35 @@
 package com.mss.exam.portal.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mss.exam.portal.entity.course.Batch;
 import com.mss.exam.portal.entity.enums.Role;
+import com.mss.exam.portal.entity.enums.UserStatus;
 import com.mss.exam.portal.entity.exam.Exam;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -30,7 +50,8 @@ import java.util.List;
         indexes = {
                 @Index(name = "IDX_USERS_EMAIL", columnList = "EMAIL"),
                 @Index(name = "IDX_USERS_PHONE", columnList = "PHONE"),
-                @Index(name = "IDX_USERS_ROLE", columnList = "ROLE")
+                @Index(name = "IDX_USERS_ROLE", columnList = "ROLE"),
+                @Index(name = "IDX_USERS_STATUS", columnList = "STATUS")
         }
 )
 @Getter
@@ -74,9 +95,10 @@ public class User {
     @Column(name = "ROLE", nullable = false, length = 30)
     private Role role;
 
-    @Column(name = "IS_ACTIVE", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STATUS", nullable = false)
     @Builder.Default
-    private boolean active = true;
+    private UserStatus status = UserStatus.PENDING;
 
     @CreatedDate
     @Column(name = "CREATED_AT", nullable = false, updatable = false)

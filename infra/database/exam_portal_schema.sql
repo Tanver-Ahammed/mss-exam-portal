@@ -49,7 +49,7 @@ CREATE TABLE USERS
     EMAIL              VARCHAR(120)   NOT NULL,
     PASSWORD_HASH      VARCHAR(255)  NOT NULL,
     ROLE               VARCHAR(30)    NOT NULL,
-    IS_ACTIVE          BOOLEAN        NOT NULL DEFAULT TRUE,
+    STATUS VARCHAR(20) NOT NULL DEFAULT 'PENDING',
     IS_DELETED         BOOLEAN        NOT NULL DEFAULT FALSE,
     CREATED_AT         TIMESTAMP      NOT NULL DEFAULT NOW(),
     UPDATED_AT         TIMESTAMP,
@@ -65,12 +65,19 @@ CREATE TABLE USERS
                                               'ROLE_INSTRUCTOR',
                                               'ROLE_EXAMINER',
                                               'ROLE_STUDENT'
+        )),
+    CONSTRAINT CHK_USERS_STATUS CHECK (STATUS IN (
+                                                  'PENDING',
+                                                  'ACTIVE',
+                                                  'INACTIVE',
+                                                  'TERMINATED'
         ))
 );
 
 CREATE INDEX IDX_USERS_EMAIL ON USERS (EMAIL);
 CREATE INDEX IDX_USERS_PHONE ON USERS (PHONE);
 CREATE INDEX IDX_USERS_ROLE ON USERS (ROLE);
+CREATE INDEX IDX_USERS_STATUS ON USERS (STATUS);
 
 
 -- =============================================================================

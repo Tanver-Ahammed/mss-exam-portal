@@ -38,11 +38,14 @@ $(function () {
         },
         {
             title: 'Status',
-            data: 'active',
+            data: 'status',
             width: '10%',
-            render: (data) => data
-                ? '<span class="badge bg-success">Active</span>'
-                : '<span class="badge bg-danger">Inactive</span>'
+            render: function (data) {
+                if (!USER_STATUS[data]) return '<span class="badge badge-secondary">—</span>';
+                return `<span class="badge ${USER_STATUS[data].displayCSS}">
+                    ${localizeEnum(data, USER_STATUS)}
+                </span>`;
+            }
         },
         {
             title: 'Created At',

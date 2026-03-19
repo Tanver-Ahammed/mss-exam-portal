@@ -98,3 +98,20 @@ function globalDataTableInitialization(
 
     return table;
 }
+
+function localizeEnum(data, enumType) {
+    let enumObject = enumType[data];
+    let localizedEnum = '---';
+
+    if (enumObject !== undefined) {
+        localizedEnum = lang === LANGUAGE.bangla ? enumObject.bn : enumObject.en;
+    } else {
+        for (const entry of Object.values(enumType)) {
+            if (entry.name === data) {
+                localizedEnum = lang === LANGUAGE.bangla ? entry.bn : entry.en;
+            }
+        }
+    }
+
+    return localizedEnum;
+}
