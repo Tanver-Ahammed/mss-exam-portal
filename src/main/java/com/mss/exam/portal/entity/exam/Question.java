@@ -3,7 +3,24 @@ package com.mss.exam.portal.entity.exam;
 import com.mss.exam.portal.entity.course.Category;
 import com.mss.exam.portal.entity.enums.QuestionType;
 import com.mss.exam.portal.entity.user.User;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -19,7 +36,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(
@@ -139,13 +158,13 @@ public class Question {
             name = "QUESTION_TAG_MAPPINGS",
             joinColumns = @JoinColumn(
                     name = "QUESTION_ID",
-                    foreignKey = @ForeignKey(name = "FK_QUESTION_TAG_MAPPINGS_QUESTION")
+                    foreignKey = @ForeignKey(name = "FK_QTM_QUESTION")
             ),
             inverseJoinColumns = @JoinColumn(
-                    name = "TAG_ID",
-                    foreignKey = @ForeignKey(name = "FK_QUESTION_TAG_MAPPINGS_TAG")
+                    name = "QUESTION_TAG_ID",
+                    foreignKey = @ForeignKey(name = "FK_QTM_TAG")
             )
     )
     @Builder.Default
-    private List<QuestionTag> tags = new ArrayList<>();
+    private Set<QuestionTag> questionTags = new HashSet<>();
 }

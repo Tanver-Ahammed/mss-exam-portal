@@ -10,7 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -28,8 +27,8 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(
@@ -93,18 +92,7 @@ public class QuestionTag {
     @Column(name = "IS_DELETED", nullable = false)
     private boolean deleted = false;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "QUESTION_TAG_MAPPINGS",
-            joinColumns = @JoinColumn(
-                    name = "TAG_ID",
-                    foreignKey = @ForeignKey(name = "FK_QUESTION_TAG_MAPPINGS_TAG")
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "QUESTION_ID",
-                    foreignKey = @ForeignKey(name = "FK_QUESTION_TAG_MAPPINGS_QUESTION")
-            )
-    )
+    @ManyToMany(mappedBy = "questionTags", fetch = FetchType.LAZY)
     @Builder.Default
-    private List<Question> questions = new ArrayList<>();
+    private Set<Question> questions = new HashSet<>();
 }

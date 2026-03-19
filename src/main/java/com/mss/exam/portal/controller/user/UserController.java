@@ -41,7 +41,7 @@ public class UserController {
         PageRequest pageRequest = PageRequest.of(
                 start / length,
                 length,
-                Sort.by(Sort.Direction.DESC, "id")
+                Sort.by(Sort.Direction.DESC, "userId")
         );
 
         Page<UserDto> page = userService.findAll(pageRequest)

@@ -1,10 +1,11 @@
-<html th:replace="~{fragments/layout :: layout(~{::title}, ~{::main}, ~{::script})}">
+<!--/* Pass 3 fragments: title, content, pageScripts */-->
+<html th:replace="~{fragments/layout :: layout(~{::title}, ~{::main}, ~{::#page-scripts})}">
 
 <title th:fragment="title" th:text="#{page.user.title} + ' — ' + #{app.name}">Users — Exam Portal</title>
 
 <main th:fragment="content">
 
-    <!-- ── Page-specific CSS (safe to keep in body — low risk for stylesheets) ── -->
+    <!-- ── Page-specific CSS ─────────────────────────────────────────────────── -->
     <link rel="stylesheet" th:href="@{/css/user/index.css}"/>
 
     <!-- ── Page content ──────────────────────────────────────────────────────── -->
@@ -20,7 +21,8 @@
     </div>
 
     <div class="table-card">
-        <table id="usersTable" class="display nowrap" style="width:100%">
+        <!-- 'nowrap' removed — allows columns to collapse on small screens -->
+        <table id="usersTable" class="display" style="width:100%">
             <thead>
             <tr>
                 <th th:text="#{page.user.table.id}">ID</th>
@@ -40,6 +42,12 @@
 
 </main>
 
-<script th:fragment="script" th:src="@{/js/user/index.js}"></script>
+<!-- ── Page-specific scripts ──────────────────────────────────────────────────
+     Passed as 3rd argument to layout. Rendered at the bottom of <body>
+     AFTER jQuery + DataTables + all global libs are loaded.
+─────────────────────────────────────────────────────────────────────────────── -->
+<th:block id="page-scripts">
+    <script th:src="@{/js/user/index.js}"></script>
+</th:block>
 
 </html>

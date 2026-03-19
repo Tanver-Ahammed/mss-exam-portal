@@ -5,15 +5,18 @@
     MAIN LAYOUT FRAGMENT
     Usage:
 
-        <html th:replace="~{fragments/layout :: layout(~{::title}, ~{::main}, ~{::script})}">
+        <html th:replace="~{fragments/layout :: layout(~{::title}, ~{::main}, ~{::#page-scripts})}">
             <title>Page Title</title>
             <main>...page body...</main>
-            <script th:fragment="script" th:src="@{/js/my-page.js}"></script>
+            <th:block id="page-scripts">
+                <script th:src="@{/js/my-page.js}"></script>
+            </th:block>
         </html>
 
-    Page-specific CSS  → place inside <main> normally (rendered in <head> position is fine for late CSS).
-    Page-specific JS   → place as <script th:fragment="script" th:src="@{/js/my-page.js}"></script>
-                          OUTSIDE <main> so layout can hoist it AFTER all global scripts (jQuery is ready).
+    - content   : the <main> fragment — rendered inside .page-content
+    - pageScripts: optional th:block with id="page-scripts" — hoisted to
+                   bottom of <body> AFTER all global libs so jQuery is ready.
+                   If a page has no scripts, pass ~{} (empty fragment).
 */-->
 
 <th:block th:fragment="layout(title, content, pageScripts)">
@@ -37,11 +40,19 @@
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
-        <!-- 3) DataTables (Bootstrap 5 theme) -->
+        <!-- 3) DataTables core (Bootstrap 5 theme) -->
         <link rel="stylesheet"
               href="https://cdn.datatables.net/2.3.7/css/dataTables.bootstrap5.min.css"/>
 
-        <!-- 4) App CSS -->
+        <!-- 4) DataTables Buttons extension (Bootstrap 5 theme) -->
+        <link rel="stylesheet"
+              href="https://cdn.datatables.net/buttons/3.2.3/css/buttons.bootstrap5.min.css"/>
+
+        <!-- 5) DataTables Responsive extension (Bootstrap 5 theme) -->
+        <link rel="stylesheet"
+              href="https://cdn.datatables.net/responsive/3.0.4/css/responsive.bootstrap5.min.css"/>
+
+        <!-- 6) App CSS -->
         <link rel="stylesheet" th:href="@{/css/layout.css}"/>
     </head>
 
@@ -62,12 +73,12 @@
         </footer>
     </div>
 
-    <!-- ============================================================
-         GLOBAL SCRIPTS — load order matters:
-         jQuery → DataTables → Bootstrap → App → Page-specific
-         ============================================================ -->
+    <!-- ================================================================
+         GLOBAL SCRIPTS — order is critical:
+         jQuery → DataTables → Buttons → Responsive → Bootstrap → App → Page
+         ================================================================ -->
 
-    <!-- 1) jQuery (must be first — DataTables depends on it) -->
+    <!-- 1) jQuery — must be first, everything depends on it -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
             crossorigin="anonymous"></script>
@@ -76,15 +87,31 @@
     <script src="https://cdn.datatables.net/2.3.7/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.3.7/js/dataTables.bootstrap5.min.js"></script>
 
-    <!-- 3) Bootstrap JS (bundle includes Popper) -->
+    <!-- 3) DataTables Buttons extension -->
+    <script src="https://cdn.datatables.net/buttons/3.2.3/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.print.min.js"></script>
+
+    <!-- 4) DataTables Responsive extension -->
+    <script src="https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.4/js/responsive.bootstrap5.min.js"></script>
+
+    <!-- 5) Required for Excel / CSV / PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+    <!-- 6) Bootstrap JS (bundle includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
 
-    <!-- 4) App layout JS -->
+    <!-- 7) App layout JS -->
     <script th:src="@{/js/layout.js}"></script>
 
-    <!-- 5) Page-specific scripts slot -->
+    <!-- 8) Page-specific scripts — passed in as 3rd fragment parameter.
+             Rendered here so they always execute AFTER all global libraries. -->
     <th:block th:replace="${pageScripts}"></th:block>
 
     </body>

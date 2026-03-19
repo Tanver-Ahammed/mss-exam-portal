@@ -6,7 +6,7 @@ import com.mss.exam.portal.entity.user.User;
 import java.time.LocalDateTime;
 
 public record UserDto(
-        Long id,
+        Long userId,
         String name,
         String nameLocal,
         String username,
@@ -18,7 +18,7 @@ public record UserDto(
 ) {
     public static UserDto from(User user) {
         return new UserDto(
-                user.getId(),
+                user.getUserId(),
                 user.getName(),
                 user.getNameLocal(),
                 user.getUsername(),
