@@ -29,3 +29,18 @@ const USER_STATUS = {
         displayCSS: "badge-danger"
     }
 }
+
+const USER_MESSAGES = {
+    search: {
+        en: 'Search users...',
+        bn: 'ব্যবহারকারী খুঁজুন...'
+    },
+    lengthMenu: {
+        en: 'Show _MENU_ entries',
+        bn: '_MENU_ টি এন্ট্রি দেখান'
+    },
+    info: {
+        en: 'Showing _START_ to _END_ of _TOTAL_ users',
+        bn: '_TOTAL_ জনের মধ্যে _START_ থেকে _END_ দেখানো হচ্ছে'
+    }
+};

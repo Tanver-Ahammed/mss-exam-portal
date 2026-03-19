@@ -28,19 +28,19 @@
 }
 
 [data-theme="light"] {
-    --bg-base: #f1f5f9;
+    --bg-base: #f8fafc;
     --bg-surface: #ffffff;
-    --bg-hover: #f8fafc;
-    --bg-active: rgba(99, 102, 241, 0.12);
-    --border: rgba(0, 0, 0, 0.10);
+    --bg-hover: #f1f5f9;
+    --bg-active: rgba(99, 102, 241, 0.10);
+    --border: rgba(0, 0, 0, 0.08);
 
-    --accent: #6366f1;
-    --accent-soft: #4f46e5;
-    --accent-glow: rgba(99, 102, 241, 0.20);
+    --accent: #4f46e5;
+    --accent-soft: #4338ca;
+    --accent-glow: rgba(79, 70, 229, 0.15);
 
-    --tx-primary: #0f172a;
-    --tx-secondary: #334155;
-    --tx-muted: #64748b;
+    --tx-primary: #020617;
+    --tx-secondary: #1e293b;
+    --tx-muted: #475569;
 }
 
 /* ── Reset ─────────────────────────────────────────────────────── */
@@ -81,8 +81,8 @@ a {
     background: var(--bg-surface);
     border-bottom: 1px solid var(--border);
     /* Indigo top accent line */
-    box-shadow: inset 0 1px 0 rgba(99, 102, 241, 0.35),
-    0 2px 16px rgba(0, 0, 0, 0.40);
+    box-shadow: inset 0 1px 0 var(--accent),
+    0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 /* Brand */
@@ -291,11 +291,11 @@ a {
     right: 0;
     top: calc(100% + 8px);
     width: 210px;
-    background: var(--bg-hover);
+    background: var(--bg-surface);
     border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, .55);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     z-index: 200;
     animation: fadeDown .15s ease forwards;
 }
@@ -382,7 +382,7 @@ a {
     flex-direction: column;
     overflow: hidden;
     transition: width var(--transition);
-    box-shadow: 2px 0 16px rgba(0, 0, 0, .25);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.06);
 }
 
 .sidebar.collapsed {
@@ -506,7 +506,7 @@ a {
     left: calc(var(--sidebar-w-col) + 8px);
     top: 50%;
     transform: translateY(-50%);
-    background: var(--bg-hover);
+    background: var(--bg-surface);
     border: 1px solid var(--border);
     color: var(--tx-primary);
     font-size: 12px;
@@ -514,7 +514,7 @@ a {
     padding: 5px 10px;
     border-radius: 6px;
     z-index: 999;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, .4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     pointer-events: none;
 }
 
@@ -727,7 +727,7 @@ a {
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, .55);
+        background: rgba(0, 0, 0, .3);
         z-index: 89;
         backdrop-filter: blur(2px);
     }

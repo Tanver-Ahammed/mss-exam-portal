@@ -5,6 +5,7 @@
 const BENGALI_LOCALE = 'bn-BN';
 const ROW_DISPLAY_GLOBAL = 1;
 const PAGE_LENGTHS = [10, 25, 50, 100];
+let PAGE_SIZE = 10;
 paginationSizeSelectTitle = 'প্রতি পাতায় {0}'
 
 /**

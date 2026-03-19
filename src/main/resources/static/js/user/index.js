@@ -67,17 +67,18 @@ $(function () {
     ];
 
     // ── Language overrides ────────────────────────────────────────
+    const paginateIcons = {
+        first: '<i class="fa-solid fa-angles-left"></i>',
+        last: '<i class="fa-solid fa-angles-right"></i>',
+        next: '<i class="fa-solid fa-angle-right"></i>',
+        previous: '<i class="fa-solid fa-angle-left"></i>'
+    };
     const language = {
         search: '',
-        searchPlaceholder: 'Search users...',
-        lengthMenu: 'Show _MENU_ entries',
-        info: 'Showing _START_ to _END_ of _TOTAL_ users',
-        paginate: {
-            first: '<i class="fa-solid fa-angles-left"></i>',
-            last: '<i class="fa-solid fa-angles-right"></i>',
-            next: '<i class="fa-solid fa-angle-right"></i>',
-            previous: '<i class="fa-solid fa-angle-left"></i>'
-        }
+        searchPlaceholder: USER_MESSAGES.search[lang],
+        lengthMenu: USER_MESSAGES.lengthMenu[lang],
+        info: USER_MESSAGES.info[lang],
+        paginate: paginateIcons
     };
 
     // ── Initialize ────────────────────────────────────────────────
