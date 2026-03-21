@@ -81,12 +81,34 @@ $(function () {
         paginate: paginateIcons
     };
 
-    // ── Initialize ────────────────────────────────────────────────
-    globalDataTableInitialization('usersTable', usersApi, columns, {
+    // ── Filter params ─────────────────────────────────────────────
+    const filterParams = () => ({
+        omniSearch: $("#omniSearch").val().trim(),
+        divisionId: $("#divisionId").val(),
+        districtId: $("#districtId").val(),
+        upazilaId: $("#upazilaId").val(),
+        status: $("#status").val(),
+    });
+
+// ── Initialize ────────────────────────────────────────────────
+    const table = globalDataTableInitialization('usersTable', usersApi, columns, {
         pageLength: 10,
+        filterParams,
         language,
         ordering: true,
         scrollToTop: true,
         order: [[0, 'asc']],
+    });
+
+// ── Filter form submit — redraw table instead of page reload ──
+    $("#filterForm").on("submit", function (e) {
+        e.preventDefault();
+        table.ajax.reload();
+    });
+
+// ── Reset filter ──────────────────────────────────────────────
+    $("#resetFilter").on("click", function () {
+        $("#filterForm")[0].reset();
+        table.ajax.reload();
     });
 });

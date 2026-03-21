@@ -3,6 +3,7 @@ package com.mss.exam.portal.controller.user;
 import com.mss.exam.portal.Routes;
 import com.mss.exam.portal.dto.DataTablesResponse;
 import com.mss.exam.portal.dto.user.UserDto;
+import com.mss.exam.portal.dto.user.UserFilter;
 import com.mss.exam.portal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -35,6 +36,7 @@ public class UserController {
     @GetMapping(Routes.API_USER)
     @ResponseBody
     public ResponseEntity<DataTablesResponse<UserDto>> getUsers(
+            UserFilter userFilter,
             @RequestParam(defaultValue = "1") int draw,
             @RequestParam(defaultValue = "0") int start,
             @RequestParam(defaultValue = "10") int length) {
@@ -45,7 +47,7 @@ public class UserController {
                 Sort.by(Sort.Direction.DESC, "userId")
         );
 
-        Page<UserDto> page = userService.findAll(pageRequest);
+        Page<UserDto> page = userService.findAll(userFilter, pageRequest);
 
         DataTablesResponse<UserDto> response = new DataTablesResponse<>();
         response.setDraw(draw);

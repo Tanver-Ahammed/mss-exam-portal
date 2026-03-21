@@ -41,7 +41,7 @@ public class UserSpecification {
         return (root, query, builder) -> builder.conjunction();
     }
 
-    public static Specification<User> equalAisExternalUserId(Long userId) {
+    public static Specification<User> equalUserId(Long userId) {
         if (Objects.isNull(userId)) return empty();
         return (root, query, builder) ->
                 builder.equal(root.get(User_.userId), userId);

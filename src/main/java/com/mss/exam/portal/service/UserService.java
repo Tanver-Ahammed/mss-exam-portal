@@ -24,8 +24,8 @@ public class UserService {
         return userRepository.count();
     }
 
-    public Page<UserDto> findAll(Pageable pageable) {
-        return userRepository.filterUser(new UserFilter(null, null, null, null, null, null), pageable);
+    public Page<UserDto> findAll(UserFilter userFilter, Pageable pageable) {
+        return userRepository.filterUser(userFilter, pageable);
     }
 
 }
