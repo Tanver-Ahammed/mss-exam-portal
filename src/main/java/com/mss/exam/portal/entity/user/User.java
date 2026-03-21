@@ -2,6 +2,7 @@ package com.mss.exam.portal.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mss.exam.portal.entity.course.Batch;
+import com.mss.exam.portal.entity.enrollment.Enrollment;
 import com.mss.exam.portal.entity.enums.Role;
 import com.mss.exam.portal.entity.enums.UserStatus;
 import com.mss.exam.portal.entity.exam.Exam;
@@ -158,7 +159,7 @@ public class User {
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private List<com.mss.exam.portal.entity.enrollment.Enrollment> enrollments = new ArrayList<>();
+    private List<Enrollment> enrollments = new ArrayList<>();
 
     @ManyToMany(mappedBy = "instructedBy", fetch = FetchType.LAZY)
     @Builder.Default

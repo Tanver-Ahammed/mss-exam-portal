@@ -45,8 +45,7 @@ public class UserController {
                 Sort.by(Sort.Direction.DESC, "userId")
         );
 
-        Page<UserDto> page = userService.findAll(pageRequest)
-                .map(UserDto::from);
+        Page<UserDto> page = userService.findAll(pageRequest);
 
         DataTablesResponse<UserDto> response = new DataTablesResponse<>();
         response.setDraw(draw);

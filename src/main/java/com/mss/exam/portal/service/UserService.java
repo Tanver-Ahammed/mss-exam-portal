@@ -1,6 +1,7 @@
 package com.mss.exam.portal.service;
 
-import com.mss.exam.portal.entity.user.User;
+import com.mss.exam.portal.dto.user.UserDto;
+import com.mss.exam.portal.dto.user.UserFilter;
 import com.mss.exam.portal.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,8 +24,8 @@ public class UserService {
         return userRepository.count();
     }
 
-    public Page<User> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public Page<UserDto> findAll(Pageable pageable) {
+        return userRepository.filterUser(new UserFilter(null, null, null, null, null, null), pageable);
     }
 
 }
