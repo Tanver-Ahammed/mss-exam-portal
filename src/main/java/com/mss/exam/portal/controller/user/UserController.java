@@ -5,6 +5,7 @@ import com.mss.exam.portal.dto.DataTablesResponse;
 import com.mss.exam.portal.dto.user.UserDto;
 import com.mss.exam.portal.dto.user.UserFilter;
 import com.mss.exam.portal.service.UserService;
+import com.mss.exam.portal.service.geo.GeoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -21,15 +22,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class UserController {
 
     private final UserService userService;
+    private final GeoService geoService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, GeoService geoService) {
         this.userService = userService;
+        this.geoService = geoService;
     }
 
     @GetMapping(Routes.USER)
     public String listUsers(Model model) {
         model.addAttribute("lang", LocaleContextHolder.getLocale().getLanguage());
+        model.addAttribute("divisions", geoService.findAllDivisions());
         return "pages/user/index";
     }
 

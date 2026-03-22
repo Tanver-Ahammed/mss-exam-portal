@@ -14,5 +14,9 @@ public final class Routes {
     public static final String QUESTION = "/question";
     public static final String ENROLLMENT = "/enrollment";
     public static final String EXAM_ATTEMPT = "/exam-attempt";
+    public static final String API_GEO = "/api/geo";
+    public static final String API_DIVISIONS = API_GEO + "/divisions";
+    public static final String API_DISTRICTS = API_GEO + "/division/{divisionId}/districts";
+    public static final String API_UPAZILAS = API_GEO + "/district/{districtId}/upazilas";
 
 }

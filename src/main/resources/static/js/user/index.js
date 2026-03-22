@@ -84,9 +84,9 @@ $(function () {
     // ── Filter params ─────────────────────────────────────────────
     const filterParams = () => ({
         omniSearch: $("#omniSearch").val().trim(),
-        divisionId: $("#divisionId").val(),
-        districtId: $("#districtId").val(),
-        upazilaId: $("#upazilaId").val(),
+        divisionId: $('#division').val(),
+        districtId: $("#district").val(),
+        upazilaId: $("#upazila").val(),
         status: $("#status").val(),
     });
 
@@ -106,9 +106,22 @@ $(function () {
         table.ajax.reload();
     });
 
-// ── Reset filter ──────────────────────────────────────────────
+    // ── Reset filter ──────────────────────────────────────────────
     $("#resetFilter").on("click", function () {
         $("#filterForm")[0].reset();
         table.ajax.reload();
+    });
+
+    GeoFilter.init();
+
+    // ── Load divisions on page load ────────────────────────────────
+    $.ajax({
+        url: '/api/geo/divisions',
+        type: 'GET',
+        success: function (data) {
+            data.forEach(function (division) {
+                $('#divisionId').append(`<option value="${division.divisionId}">${division.name}</option>`);
+            });
+        }
     });
 });

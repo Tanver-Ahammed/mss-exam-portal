@@ -24,38 +24,15 @@
         <div class="card-body">
             <form id="filterForm" class="row g-3">
                 <div class="col-md-3">
-                    <label for="omniSearch" class="form-label">Search</label>
-                    <input type="text" class="form-control" id="omniSearch" name="omniSearch"
-                           placeholder="Name, email, phone...">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="omniSearch" name="omniSearch"
+                               placeholder="Name, email, phone...">
+                        <label for="omniSearch" th:text="#{common.search}">Search</label>
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <label for="divisionId" class="form-label">Division</label>
-                    <select class="form-select" id="divisionId" name="divisionId">
-                        <option value="">All Divisions</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="districtId" class="form-label">District</label>
-                    <select class="form-select" id="districtId" name="districtId">
-                        <option value="">All Districts</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="upazilaId" class="form-label">Upazila</label>
-                    <select class="form-select" id="upazilaId" name="upazilaId">
-                        <option value="">All Upazilas</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="status" class="form-label">Status</label>
-                    <select class="form-select" id="status" name="status">
-                        <option value="">All Status</option>
-                        <option value="PENDING">Pending</option>
-                        <option value="ACTIVE">Active</option>
-                        <option value="INACTIVE">Inactive</option>
-                        <option value="SUSPENDED">Suspended</option>
-                    </select>
-                </div>
+
+                <div th:replace="~{fragments/geo-filter :: geoFilter}"></div>
+
                 <div class="col-md-1 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary w-100">
                         <i class="fa-solid fa-search"></i>
@@ -85,6 +62,7 @@
         lang = /*[[${lang}]]*/ 'en';
         usersApi = /*[[${T(com.mss.exam.portal.Routes).API_USER}]]*/ '/api/user';
     </script>
+    <script th:src="@{/js/geo.js}"></script>
     <script th:src="@{/js/user/index.js}"></script>
 </th:block>
 
