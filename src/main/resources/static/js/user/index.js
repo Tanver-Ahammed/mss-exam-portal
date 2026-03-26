@@ -7,62 +7,81 @@ $(function () {
     // ── Column definitions ────────────────────────────────────────
     const columns = [
         {
-            title: '#',
-            data: 'userId',
-            width: '5%',
-        },
-        {
-            title: 'Name',
-            data: 'name',
-            width: '15%',
-        },
-        {
-            title: 'Username',
-            data: 'username',
-            width: '15%',
-        },
-        {
-            title: 'Email',
-            data: 'email',
-            width: '20%',
-        },
-        {
-            title: 'Phone',
-            data: 'phone',
-            width: '10%',
-        },
-        {
-            title: 'Role',
-            data: 'role',
-            width: '10%',
-        },
-        {
-            title: 'Status',
-            data: 'status',
+            sTitle: '',
+            data: "userId",
             width: '10%',
             render: function (data) {
-                if (!USER_STATUS[data]) return '<span class="badge badge-secondary">—</span>';
-                return `<span class="badge ${USER_STATUS[data].displayCSS}">
-                    ${localizeEnum(data, USER_STATUS)}
-                </span>`;
+                return data || '';
             }
         },
         {
-            title: 'Created At',
-            data: 'createdAt',
-            width: '10%',
+            sTitle: name,
+            data: null,
+            width: '20%',
+            render: function (data) {
+                return `
+            <div class="row py-1">
+                <span class="col-3 col-3 fw-bold">${name}</span> 
+                <span class="col-7 ml-n4 text-break">${localizeEntityName(data)}</span>
+            </div> 
+            <div class="row py-1">
+                <span class="col-3 col-3 fw-bold">${username}</span> 
+                <span class="col-7 text-break ml-n4 text-break">${data.username}</span>
+            </div>`;
+            }
         },
         {
-            title: 'Action',
+            sTitle: contact,
             data: null,
-            width: '5%',
+            width: '25%',
+            render: function (data) {
+                return `
+            <div class="row py-1">
+                <span class="col-3 col-3 fw-bold">${email}</span> 
+                <span class="col-7 ml-n4 text-break">${data.email}</span>
+            </div> 
+            <div class="row py-1">
+                <span class="col-3 col-3 fw-bold">${phone}</span> 
+                <span class="col-7 text-break ml-n4 text-break">${data.phone}</span>
+            </div>`;
+            }
+        },
+        {
+            sTitle: role,
+            data: "role",
+            width: '10%',
+            render: function (data) {
+                return data || '';
+            }
+        },
+        {
+            sTitle: status,
+            data: 'status',
+            width: '10%',
+            render: function (data) {
+                if (!USER_STATUS[data]) {
+                    return '<span class="badge badge-secondary">—</span>';
+                }
+                return `<span class="badge ${USER_STATUS[data].displayCSS} fw-bold">
+                ${localizeEnum(data, USER_STATUS)}
+            </span>`;
+            }
+        },
+        {
+            sTitle: action,
+            data: null,
+            width: '10%',
             className: 'text-center',
             orderable: false,
             render: () => `
-                <div class="action-buttons">
-                    <button class="btn-hover-blue btn-icon" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                    <button class="btn-hover-red btn-icon" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                </div>`
+            <div class="action-buttons">
+                <button class="btn-hover-blue btn-icon" title="Edit">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button class="btn-hover-red btn-icon" title="Delete">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>`
         }
     ];
 

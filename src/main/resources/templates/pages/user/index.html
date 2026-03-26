@@ -52,7 +52,18 @@
 ────────────────────────────────────────────────────────────────────────────── -->
 <th:block id="page-scripts">
     <script th:inline="javascript">
-        lang = /*[[${lang}]]*/ 'en';
+        const lang = /*[[${lang}]]*/ 'LANG';
+
+        const name = /*[[#{common.name}]]*/ "NAME";
+        const username = /*[[#{common.username}]]*/ "USERNAME";
+        const email = /*[[#{common.email}]]*/ "EMAIL";
+        const phone = /*[[#{common.phone}]]*/ "PHONE";
+        const contact = /*[[#{common.contact}]]*/ "CONTACT";
+        const address = /*[[#{common.address}]]*/ "ADDRESS";
+        const role = /*[[#{common.role}]]*/ "ROLE";
+        const status = /*[[#{common.status}]]*/ "STATUS";
+        const action = /*[[#{common.action}]]*/ "ACTION";
+
         usersApi = /*[[${T(com.mss.exam.portal.Routes).API_USER}]]*/ '/api/user';
     </script>
     <script th:src="@{/js/geo.js}"></script>

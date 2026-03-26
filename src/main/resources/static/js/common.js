@@ -116,3 +116,11 @@ function localizeEnum(data, enumType) {
 
     return localizedEnum;
 }
+
+function localizeEntityName(data) {
+    if (data) {
+        return lang === LANGUAGE.bangla ? data.nameLocal : data.name;
+    } else {
+        return '---';
+    }
+}
