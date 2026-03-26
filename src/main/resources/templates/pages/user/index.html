@@ -1,0 +1,73 @@
+<!--/* Pass 3 fragments: title, content, pageScripts */-->
+<html th:replace="~{fragments/layout :: layout(~{::title}, ~{::main}, ~{::#page-scripts})}">
+
+<head>
+    <title th:fragment="title" th:text="#{page.user.title} + ' — ' + #{app.name}">Users — Exam Portal</title>
+</head>
+
+<main th:fragment="content">
+
+    <!-- ── Page content ──────────────────────────────────────────────────────── -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title" th:text="#{page.user.title}">Users</h1>
+            <p class="page-subtitle" th:text="#{page.user.subtitle}">Manage system users and their roles</p>
+        </div>
+        <button class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i>
+            <span th:text="#{page.user.add}">Add User</span>
+        </button>
+    </div>
+
+    <!-- ── Filter Section ─────────────────────────────────────────────────────── -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form id="filterForm">
+                <div th:replace="~{fragments/geo-filter :: geoFilter}"></div>
+                <div class="row mt-2">
+                    <div class="col-12 d-flex justify-content-end gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-search"></i>
+                            <span th:text="#{common.filter}">Filter</span>
+                        </button>
+                        <button type="button" id="resetFilter" class="btn btn-secondary">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span th:text="#{common.reset}">Reset</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="usersTable" class="table"></table>
+    </div>
+
+</main>
+
+<!-- ── Page-specific scripts ──────────────────────────────────────────────────
+     Passed as 3rd argument to layout. Rendered at the bottom of <body>
+     AFTER jQuery + DataTables + all global libs are loaded.
+────────────────────────────────────────────────────────────────────────────── -->
+<th:block id="page-scripts">
+    <script th:inline="javascript">
+        const lang = /*[[${lang}]]*/ 'LANG';
+
+        const name = /*[[#{common.name}]]*/ "NAME";
+        const username = /*[[#{common.username}]]*/ "USERNAME";
+        const email = /*[[#{common.email}]]*/ "EMAIL";
+        const phone = /*[[#{common.phone}]]*/ "PHONE";
+        const contact = /*[[#{common.contact}]]*/ "CONTACT";
+        const address = /*[[#{common.address}]]*/ "ADDRESS";
+        const role = /*[[#{common.role}]]*/ "ROLE";
+        const status = /*[[#{common.status}]]*/ "STATUS";
+        const action = /*[[#{common.action}]]*/ "ACTION";
+
+        usersApi = /*[[${T(com.mss.exam.portal.Routes).API_USER}]]*/ '/api/user';
+    </script>
+    <script th:src="@{/js/geo.js}"></script>
+    <script th:src="@{/js/user/index.js}"></script>
+</th:block>
+
+</html>

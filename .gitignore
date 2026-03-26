@@ -31,10 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-# Frontend (Node / Vite)
-frontend/node_modules/
-src/main/resources/static/lib
-# Compiled assets — regenerated on every build, do not commit
-*.class
-.DS_Store

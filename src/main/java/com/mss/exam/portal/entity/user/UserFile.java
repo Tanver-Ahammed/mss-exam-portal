@@ -1,17 +1,7 @@
 package com.mss.exam.portal.entity.user;
 
-import com.mss.exam.portal.entity.BaseEntity;
 import com.mss.exam.portal.entity.enums.FileType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,17 +9,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
-/**
- * Stores metadata for every file belonging to a {@link User}.
- * Binary content lives in S3/MinIO; only the object key is persisted here.
- *
- * <p>One user may have many files (e.g. multiple historical profile pictures)
- * but only one {@code PROFILE_PICTURE} should have {@code IS_ACTIVE = true}
- * at any time — enforced in {@code UserFileService}.
- *
- * <p>Table: {@code USER_FILES}
- */
+import java.time.LocalDateTime;
+
 @Entity
 @Table(
         name = "USER_FILES",
@@ -44,19 +30,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(callSuper = true)
-public class UserFile extends BaseEntity {
+@EqualsAndHashCode
+public class UserFile {
 
-    /**
-     * S3 / MinIO object key, e.g. {@code users/{uuid}/profile/avatar.jpg}.
-     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "USER_FILE_ID", updatable = false, nullable = false)
+    private Long userFileId;
+
     @NotBlank
     @Column(name = "S3_OBJECT_KEY", nullable = false)
     private String s3ObjectKey;
 
-    /**
-     * Public CDN URL or pre-signed URL cached at upload time.
-     */
     @NotBlank
     @Column(name = "FILE_URL", nullable = false)
     private String fileUrl;
@@ -65,15 +50,9 @@ public class UserFile extends BaseEntity {
     @Column(name = "ORIGINAL_FILENAME", nullable = false, length = 255)
     private String originalFilename;
 
-    /**
-     * MIME type — e.g. {@code image/jpeg}, {@code image/png}.
-     */
     @Column(name = "CONTENT_TYPE", nullable = false, length = 100)
     private String contentType;
 
-    /**
-     * File size in bytes.
-     */
     @Column(name = "FILE_SIZE_BYTES")
     private Long fileSizeBytes;
 
@@ -85,7 +64,33 @@ public class UserFile extends BaseEntity {
     @Builder.Default
     private boolean active = true;
 
-    // ── Relationship ──────────────────────────────────────────────────────────
+    @CreatedDate
+    @Column(name = "CREATED_AT", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "UPDATED_AT")
+    private LocalDateTime updatedAt;
+
+    @CreatedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "CREATED_BY_USER_ID",
+            updatable = false,
+            foreignKey = @ForeignKey(name = "FK_AUDIT_CREATED_BY_USER")
+    )
+    private User createdBy;
+
+    @LastModifiedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "UPDATED_BY_USER_ID",
+            foreignKey = @ForeignKey(name = "FK_AUDIT_UPDATED_BY_USER")
+    )
+    private User updatedBy;
+
+    @Column(name = "IS_DELETED", nullable = false)
+    private boolean deleted = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(

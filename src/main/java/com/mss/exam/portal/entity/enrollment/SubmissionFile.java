@@ -1,14 +1,17 @@
 package com.mss.exam.portal.entity.enrollment;
 
-import com.mss.exam.portal.entity.BaseEntity;
 import com.mss.exam.portal.entity.enums.FileType;
 import com.mss.exam.portal.entity.exam.Answer;
+import com.mss.exam.portal.entity.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -21,21 +24,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
-/**
- * Represents one file (PDF or scanned image) uploaded by a student as part
- * of a written-exam {@link Answer}.
- *
- * <p>A student may upload multiple pages per answer (e.g. a multi-page
- * handwritten solution scanned as individual images). The {@code PAGE_NUMBER}
- * field orders them for the examiner's review queue.
- *
- * <p>Applicable only when {@link com.mss.exam.portal.entity.enums.ExamType}
- * is {@code WRITTEN} or {@code MIXED} and the question type is
- * {@code LONG_ANSWER}.
- *
- * <p>Table: {@code SUBMISSION_FILES}
- */
+import java.time.LocalDateTime;
+
 @Entity
 @Table(
         name = "SUBMISSION_FILES",
@@ -50,20 +45,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(callSuper = true)
-public class SubmissionFile extends BaseEntity {
+@EqualsAndHashCode
+public class SubmissionFile {
 
-    /**
-     * S3 / MinIO object key, e.g.
-     * {@code submissions/{attempt-uuid}/q3/page_1.pdf}
-     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "SUBMISSION_FILE_ID", updatable = false, nullable = false)
+    private Long submissionFileId;
+
     @NotBlank
     @Column(name = "S3_OBJECT_KEY", nullable = false)
     private String s3ObjectKey;
 
-    /**
-     * Accessible download URL (CDN or pre-signed S3 URL).
-     */
     @NotBlank
     @Column(name = "FILE_URL", nullable = false)
     private String fileUrl;
@@ -72,55 +65,56 @@ public class SubmissionFile extends BaseEntity {
     @Column(name = "ORIGINAL_FILENAME", nullable = false, length = 255)
     private String originalFilename;
 
-    /**
-     * MIME type. Accepted values:
-     * {@code application/pdf}, {@code image/jpeg},
-     * {@code image/png}, {@code image/webp}, {@code image/tiff}.
-     */
     @Column(name = "CONTENT_TYPE", nullable = false, length = 100)
     private String contentType;
 
-    /**
-     * File size in bytes — service layer rejects files larger than 20 MB.
-     */
     @Column(name = "FILE_SIZE_BYTES")
     private Long fileSizeBytes;
 
-    /**
-     * {@code SUBMISSION_PDF} or {@code SUBMISSION_IMAGE}.
-     */
     @Enumerated(EnumType.STRING)
     @Column(name = "FILE_TYPE", nullable = false, length = 30)
     private FileType fileType;
 
-    /**
-     * 1-based sequence number within this answer's upload set.
-     * Examiner views files ordered ascending by this value.
-     */
     @Min(1)
     @Column(name = "PAGE_NUMBER", nullable = false)
     @Builder.Default
     private Integer pageNumber = 1;
 
-    /**
-     * Set to {@code true} once the examiner has opened this file.
-     * Drives the "unreviewed uploads" counter in the grading dashboard.
-     */
     @Column(name = "IS_REVIEWED", nullable = false)
     @Builder.Default
     private boolean reviewed = false;
 
-    /**
-     * Thumbnail URL generated server-side after upload (image types only).
-     */
     @Column(name = "THUMBNAIL_URL")
     private String thumbnailUrl;
 
-    // ── Relationships ─────────────────────────────────────────────────────────
+    @CreatedDate
+    @Column(name = "CREATED_AT", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-    /**
-     * The specific answer this file belongs to.
-     */
+    @LastModifiedDate
+    @Column(name = "UPDATED_AT")
+    private LocalDateTime updatedAt;
+
+    @CreatedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "CREATED_BY_USER_ID",
+            updatable = false,
+            foreignKey = @ForeignKey(name = "FK_AUDIT_CREATED_BY_USER")
+    )
+    private User createdBy;
+
+    @LastModifiedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "UPDATED_BY_USER_ID",
+            foreignKey = @ForeignKey(name = "FK_AUDIT_UPDATED_BY_USER")
+    )
+    private User updatedBy;
+
+    @Column(name = "IS_DELETED", nullable = false)
+    private boolean deleted = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "ANSWER_ID",
@@ -129,10 +123,6 @@ public class SubmissionFile extends BaseEntity {
     )
     private Answer answer;
 
-    /**
-     * Redundant FK to {@link ExamAttempt} — enables a single
-     * "give me all files for this sitting" query without joining through answers.
-     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "ATTEMPT_ID",

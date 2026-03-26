@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="geoFilter" id="geo-filter-fragment" class="row g-3">
+
+    <!-- Division (pre-populated from model) -->
+    <div class="col-sm-4 col-lg-3">
+        <div class="form-floating">
+            <select class="form-select" id="division">
+                <option value="" th:text="#{common.choose.division}">Select Division</option>
+                <option th:each="division : ${divisions}"
+                        th:value="${division.divisionId}"
+                        th:text="${division.localizedName}">
+                </option>
+            </select>
+            <label for="division" th:text="#{common.division}">Division</label>
+        </div>
+    </div>
+
+    <!-- District (populated via AJAX) -->
+    <div class="col-sm-4 col-lg-3">
+        <div class="form-floating">
+            <select class="form-select" id="district" disabled>
+                <option value="" th:text="#{common.choose.district}">Select District</option>
+            </select>
+            <label for="district" th:text="#{common.district}">District</label>
+        </div>
+    </div>
+
+    <!-- Upazila (populated via AJAX) -->
+    <div class="col-sm-4 col-lg-3">
+        <div class="form-floating">
+            <select class="form-select" id="upazila" disabled>
+                <option value="" th:text="#{common.choose.upazila}">Select Upazila</option>
+            </select>
+            <label for="upazila" th:text="#{common.upazila}">Upazila</label>
+        </div>
+    </div>
+
+    <div class="col-sm-4 col-lg-3">
+        <div class="form-floating">
+            <select class="form-select" id="status">
+                <option value="" th:text="#{common.select.one}">Select program Status</option>
+                <th:block th:each="status : ${T(com.mss.exam.portal.entity.enums.UserStatus).values()}">
+                    <option th:value="${status}"
+                            th:text="#{${status.getMessageKey()}}">
+                    </option>
+                </th:block>
+            </select>
+            <label for="status" th:text="#{common.status}">Status</label>
+        </div>
+    </div>
+
+    <div class="col-sm-4 col-lg-3">
+        <div class="form-floating">
+            <input type="text" class="form-control" id="omniSearch" name="omniSearch"
+                   placeholder="Name, email, phone...">
+            <label for="omniSearch" th:text="#{common.search.by}">Search</label>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

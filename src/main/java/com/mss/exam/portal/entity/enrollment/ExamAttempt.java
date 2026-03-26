@@ -1,13 +1,16 @@
 package com.mss.exam.portal.entity.enrollment;
 
-import com.mss.exam.portal.entity.BaseEntity;
 import com.mss.exam.portal.entity.exam.Answer;
 import com.mss.exam.portal.entity.exam.Exam;
+import com.mss.exam.portal.entity.user.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -21,19 +24,15 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents one student sitting of an {@link com.mss.exam.portal.entity.exam.Exam}.
- *
- * <p>Uses JPA optimistic locking ({@code @Version}) to prevent concurrent
- * double-submission when a student submits from two browser tabs simultaneously.
- *
- * <p>Table: {@code EXAM_ATTEMPTS}
- */
 @Entity
 @Table(
         name = "EXAM_ATTEMPTS",
@@ -47,8 +46,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(callSuper = true)
-public class ExamAttempt extends BaseEntity {
+@EqualsAndHashCode
+public class ExamAttempt {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "EXAM_ATTEMPT_ID", updatable = false, nullable = false)
+    private Long examAttemptId;
 
     @Min(1)
     @Column(name = "ATTEMPT_NUMBER", nullable = false)
@@ -83,12 +87,38 @@ public class ExamAttempt extends BaseEntity {
     @Column(name = "CERTIFICATE_URL")
     private String certificateUrl;
 
+    @CreatedDate
+    @Column(name = "CREATED_AT", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "UPDATED_AT")
+    private LocalDateTime updatedAt;
+
+    @CreatedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "CREATED_BY_USER_ID",
+            updatable = false,
+            foreignKey = @ForeignKey(name = "FK_AUDIT_CREATED_BY_USER")
+    )
+    private User createdBy;
+
+    @LastModifiedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "UPDATED_BY_USER_ID",
+            foreignKey = @ForeignKey(name = "FK_AUDIT_UPDATED_BY_USER")
+    )
+    private User updatedBy;
+
+    @Column(name = "IS_DELETED", nullable = false)
+    private boolean deleted = false;
+
     @Version
     @Column(name = "VERSION", nullable = false)
     @Builder.Default
     private Long version = 0L;
-
-    // ── Relationships ─────────────────────────────────────────────────────────
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
@@ -106,11 +136,11 @@ public class ExamAttempt extends BaseEntity {
     )
     private Exam exam;
 
-    @OneToMany(mappedBy = "attempt", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "attempt", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Answer> answers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "attempt", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "attempt", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<SubmissionFile> submissionFiles = new ArrayList<>();
 }

@@ -1,8 +1,8 @@
 package com.mss.exam.portal.entity.exam;
 
-import com.mss.exam.portal.entity.BaseEntity;
 import com.mss.exam.portal.entity.course.Category;
 import com.mss.exam.portal.entity.enums.QuestionType;
+import com.mss.exam.portal.entity.user.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +10,9 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -26,15 +29,17 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-/**
- * A single question belonging to an {@link Exam}.
- *
- * <p>Table: {@code QUESTIONS}
- */
 @Entity
 @Table(
         name = "QUESTIONS",
@@ -48,8 +53,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(callSuper = true)
-public class Question extends BaseEntity {
+@EqualsAndHashCode
+public class Question {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "QUESTION_ID", updatable = false, nullable = false)
+    private Long questionId;
 
     @NotBlank
     @Column(name = "QUESTION_TEXT", columnDefinition = "TEXT", nullable = false)
@@ -71,9 +81,6 @@ public class Question extends BaseEntity {
     @Column(name = "EXPLANATION", columnDefinition = "TEXT")
     private String explanation;
 
-    /**
-     * Comma-separated accepted keywords used for auto-grading SHORT_ANSWER questions.
-     */
     @Column(name = "ANSWER_KEYWORDS", columnDefinition = "TEXT")
     private String answerKeywords;
 
@@ -87,7 +94,33 @@ public class Question extends BaseEntity {
     @Column(name = "QUESTION_YEAR")
     private Integer questionYear;
 
-    // ── Relationships ─────────────────────────────────────────────────────────
+    @CreatedDate
+    @Column(name = "CREATED_AT", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "UPDATED_AT")
+    private LocalDateTime updatedAt;
+
+    @CreatedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "CREATED_BY_USER_ID",
+            updatable = false,
+            foreignKey = @ForeignKey(name = "FK_AUDIT_CREATED_BY_USER")
+    )
+    private User createdBy;
+
+    @LastModifiedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "UPDATED_BY_USER_ID",
+            foreignKey = @ForeignKey(name = "FK_AUDIT_UPDATED_BY_USER")
+    )
+    private User updatedBy;
+
+    @Column(name = "IS_DELETED", nullable = false)
+    private boolean deleted = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
@@ -111,27 +144,27 @@ public class Question extends BaseEntity {
     )
     private Exam exam;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("displayOrder ASC")
     @Builder.Default
     private List<Option> options = new ArrayList<>();
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Answer> answers = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "QUESTION_TAG_MAPPINGS",
             joinColumns = @JoinColumn(
                     name = "QUESTION_ID",
-                    foreignKey = @ForeignKey(name = "FK_QUESTION_TAG_MAPPINGS_QUESTION")
+                    foreignKey = @ForeignKey(name = "FK_QTM_QUESTION")
             ),
             inverseJoinColumns = @JoinColumn(
-                    name = "TAG_ID",
-                    foreignKey = @ForeignKey(name = "FK_QUESTION_TAG_MAPPINGS_TAG")
+                    name = "QUESTION_TAG_ID",
+                    foreignKey = @ForeignKey(name = "FK_QTM_TAG")
             )
     )
     @Builder.Default
-    private List<QuestionTag> tags = new ArrayList<>();
+    private Set<QuestionTag> questionTags = new HashSet<>();
 }

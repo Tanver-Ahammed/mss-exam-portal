@@ -1,16 +1,8 @@
 package com.mss.exam.portal.entity.course;
 
-import com.mss.exam.portal.entity.BaseEntity;
 import com.mss.exam.portal.entity.exam.Question;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.mss.exam.portal.entity.user.User;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -19,7 +11,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +32,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(callSuper = true)
-public class Category extends BaseEntity {
+@EqualsAndHashCode
+public class Category {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "CATEGORY_ID", updatable = false, nullable = false)
+    private Long categoryId;
 
     @NotBlank
     @Size(max = 100)
@@ -60,11 +62,39 @@ public class Category extends BaseEntity {
     @Builder.Default
     private boolean active = true;
 
-    @OneToMany(mappedBy = "category")
+    @CreatedDate
+    @Column(name = "CREATED_AT", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "UPDATED_AT")
+    private LocalDateTime updatedAt;
+
+    @CreatedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "CREATED_BY_USER_ID",
+            updatable = false,
+            foreignKey = @ForeignKey(name = "FK_AUDIT_CREATED_BY_USER")
+    )
+    private User createdBy;
+
+    @LastModifiedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "UPDATED_BY_USER_ID",
+            foreignKey = @ForeignKey(name = "FK_AUDIT_UPDATED_BY_USER")
+    )
+    private User updatedBy;
+
+    @Column(name = "IS_DELETED", nullable = false)
+    private boolean deleted = false;
+
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Question> questions = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "COURSE_CATEGORY_MAPPINGS",
             joinColumns = @JoinColumn(
