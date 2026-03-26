@@ -109,19 +109,10 @@ $(function () {
     // ── Reset filter ──────────────────────────────────────────────
     $("#resetFilter").on("click", function () {
         $("#filterForm")[0].reset();
+        $('#district').prop('disabled', true).find('option:not(:first)').remove();
+        $('#upazila').prop('disabled', true).find('option:not(:first)').remove();
         table.ajax.reload();
     });
 
     GeoFilter.init();
-
-    // ── Load divisions on page load ────────────────────────────────
-    $.ajax({
-        url: '/api/geo/divisions',
-        type: 'GET',
-        success: function (data) {
-            data.forEach(function (division) {
-                $('#divisionId').append(`<option value="${division.divisionId}">${division.name}</option>`);
-            });
-        }
-    });
 });

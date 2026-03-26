@@ -59,6 +59,14 @@ html, body {
     -webkit-font-smoothing: antialiased;
 }
 
+:lang(bn):not(i):not(.fa):not(.fas):not(.far):not(.fal):not(.fab) {
+    font-family: 'Kalpurush', 'Sora', system-ui, sans-serif;
+}
+
+i, .fa, .fas, .far, .fal, .fab {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Brands', system-ui, sans-serif !important;
+}
+
 a {
     text-decoration: none;
     color: inherit;
