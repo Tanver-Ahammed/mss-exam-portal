@@ -73,6 +73,12 @@ public class UserSpecification {
                 builder.equal(root.get(User_.email), email);
     }
 
+    public static Specification<User> equalUsername(String username) {
+        if (StringUtils.isBlank(username)) return empty();
+        return (root, query, builder) ->
+                builder.equal(root.get(User_.username), username);
+    }
+
     public static Specification<User> equalDivisionId(Long divisionId) {
         if (Objects.isNull(divisionId)) return empty();
         return (root, query, builder) ->

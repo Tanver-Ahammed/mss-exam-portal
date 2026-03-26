@@ -29,7 +29,8 @@ public interface UserRepository extends MssRepository<User, Long> {
                     .where(UserSpecification.likeName(filter.omniSearch()))
                     .or(UserSpecification.likeNameLocal(filter.omniSearch()))
                     .or(UserSpecification.equalMobileNumber(filter.omniSearch()))
-                    .or(UserSpecification.equalEmail(filter.omniSearch()));
+                    .or(UserSpecification.equalEmail(filter.omniSearch()))
+                    .or(UserSpecification.equalUsername(filter.omniSearch()));
 
             spec = spec.and(omniSearchSpec);
         }
