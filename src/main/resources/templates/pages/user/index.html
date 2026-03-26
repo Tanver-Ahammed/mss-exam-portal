@@ -23,6 +23,9 @@
     <div class="card mb-4">
         <div class="card-body">
             <form id="filterForm" class="row g-3">
+
+                <div th:replace="~{fragments/geo-filter :: geoFilter}"></div>
+
                 <div class="col-md-3">
                     <div class="form-floating">
                         <input type="text" class="form-control" id="omniSearch" name="omniSearch"
@@ -30,8 +33,6 @@
                         <label for="omniSearch" th:text="#{common.search}">Search</label>
                     </div>
                 </div>
-
-                <div th:replace="~{fragments/geo-filter :: geoFilter}"></div>
 
                 <div class="col-md-1 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary w-100">

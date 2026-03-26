@@ -40,7 +40,7 @@
 
     <div class="col-sm-4 col-lg-3">
         <div class="form-floating">
-            <select class="form-select" id="statusSelect">
+            <select class="form-select" id="status">
                 <option value="" th:text="#{common.select.one}">Select program Status</option>
                 <th:block th:each="status : ${T(com.mss.exam.portal.entity.enums.UserStatus).values()}">
                     <option th:value="${status}"
@@ -48,7 +48,7 @@
                     </option>
                 </th:block>
             </select>
-            <label for="statusSelect" th:text="#{common.status}">Status</label>
+            <label for="status" th:text="#{common.status}">Status</label>
         </div>
     </div>
 
