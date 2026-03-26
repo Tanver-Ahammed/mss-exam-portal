@@ -49,10 +49,10 @@ const GeoFilter = (function () {
     // ── Event Handlers ─────────────────────────────────────────
 
     function onDivisionChange() {
-        $('#divisionSelect').on('change', async function () {
+        $('#division').on('change', async function () {
             const divisionId = $(this).val();
-            const $district = $('#districtSelect');
-            const $upazila = $('#upazilaSelect');
+            const $district = $('#district');
+            const $upazila = $('#upazila');
 
             resetSelect($upazila, true);
             resetSelect($district, true);
@@ -77,9 +77,9 @@ const GeoFilter = (function () {
     }
 
     function onDistrictChange() {
-        $('#districtSelect').on('change', async function () {
+        $('#district').on('change', async function () {
             const districtId = $(this).val();
-            const $upazila = $('#upazilaSelect');
+            const $upazila = $('#upazila');
 
             resetSelect($upazila, true);
 
@@ -110,8 +110,8 @@ const GeoFilter = (function () {
      */
     function init() {
         // Unbind first to prevent duplicate handlers if fragment is re-loaded
-        $('#divisionSelect').off('change');
-        $('#districtSelect').off('change');
+        $('#division').off('change');
+        $('#district').off('change');
 
         onDivisionChange();
         onDistrictChange();
